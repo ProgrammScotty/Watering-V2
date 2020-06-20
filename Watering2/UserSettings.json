@@ -1,0 +1,19 @@
+{
+  "MySettings": {
+    "MeasurementFrequency": "10",
+    "PercentageHotFor2ndWateringActive": "35",
+    "LevelHeatTemperature": "25",
+    "LevelColdTemperature": "15",
+    "PumpDurationMainCycle": "90",
+    "PumpDurationSecondCycle": "60",
+    "MaxRainDuration": "100",
+    "StartWateringMainCycle": "0.06:00:00.0000",
+    "StartWateringSecondCycle": "0.18:00:00.0000",
+    "BeginMonitoring": "0.09:00:00.0000",
+    "EndMonitoring": "0.19:00:00.0000",
+    "CorrFactorHeat": "2",
+    "CorrFactorCold": "0.5",
+    "MaxDaysWithoutWatering": "3",
+    "SecondWateringActive": "true"
+  }
+}

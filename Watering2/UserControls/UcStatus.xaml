@@ -1,0 +1,61 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:conv="clr-namespace:Watering2.ValueConverters"
+             xmlns:dd="clr-namespace:Watering2.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Watering2.UserControls.UcStatus"
+             d:DataContext="{x:Static dd:DesignViewModel.StatusViewModel}">
+
+  <UserControl.Resources>
+    <conv:DateTimeValueConverter x:Key="TimestampConverter" />
+    <conv:BoolValueConverter x:Key="BoolConverter" />
+  </UserControl.Resources>
+  
+  <StackPanel Width="720">
+    <StackPanel Orientation="Horizontal" Margin="5,5,5,0">
+      <TextBlock Text="Werte von: " Width="110"/>
+      <TextBlock Text="{Binding Path=StatusViewModel.LastReadingPoints[0].TimeStamp, Mode=OneWay, Converter={StaticResource TimestampConverter}}"/>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Margin="5,2,5,0">
+      <TextBlock Text="Temperatur: " Width="110"/>
+      <TextBlock Text="{Binding StatusViewModel.LastReadingPoints[0].Temperature, StringFormat={}{0:F2} °C}"/>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Margin="5,2,5,0">
+      <TextBlock Text="Luftfeuchte: " Width="110"/>
+      <TextBlock Text="{Binding StatusViewModel.LastReadingPoints[0].Humidity, StringFormat={}{0:F2} %}"/>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Margin="5,2,5,0">
+      <TextBlock Text="Luftdruck: " Width="110"/>
+      <TextBlock Text="{Binding StatusViewModel.LastReadingPoints[0].Pressure, StringFormat={}{0:F2} hPas}"/>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Margin="5,2,5,0">
+      <TextBlock Text="Taupunkt: " Width="110"/>
+      <TextBlock Text="{Binding StatusViewModel.LastReadingPoints[0].DewPoint, StringFormat={}{0:F2} °C}"/>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Margin="5,2,5,0">
+      <TextBlock Text="Regen: " Width="110"/>
+      <TextBlock Text="{Binding StatusViewModel.LastReadingPoints[0].Raining, Mode=OneWay, Converter={StaticResource BoolConverter}}"/>
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Margin="5,30,5,0">
+      <TextBlock Text="Zeit bis zum Gießen: " Width="160"/>
+      <TextBlock Text="{Binding Path=StatusViewModel.TimeToMainWateringInfo, Mode=OneWay }" />
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Margin="5,2,5,0">
+      <TextBlock Text="Zeit bis zum 2. Gießen: " Width="160"/>
+      <TextBlock Text="{Binding Path=StatusViewModel.TimeToSecondaryWateringInfo, Mode=OneWay }" />
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Margin="5,30,5,0">
+      <TextBlock Text="Diagnosemodus des Sensors: " Width="210"/>
+      <CheckBox IsChecked="{Binding Path=StatusViewModel.DiagnosticModeActive, Mode=TwoWay}"  />
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Margin="5,2,5,0" Height="40">
+      <TextBlock Text="Pumpen manuell steuern: " Width="210" Margin="0,10,0,0"/>
+      <Button Content="{Binding StatusViewModel.PumpButtonText}"  Command="{Binding StatusViewModel.ChangePumpStatusCmd}" Width="200" Height="28" />
+    </StackPanel>
+    <StackPanel Orientation="Horizontal" Margin="215,50,5,0">
+      <Button Content="Programm beenden" Command="{Binding CloseWindowCmd}" CommandParameter="{Binding ElementName=HauptFenster}" HorizontalAlignment="Center" Width="200" Height="28"/>
+    </StackPanel>
+  </StackPanel>
+</UserControl>
