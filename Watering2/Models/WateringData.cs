@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Watering2.Models
 {
-    public partial class WateringData
+    public class WateringData
     {
         [Key]
         public long Id { get; set; }

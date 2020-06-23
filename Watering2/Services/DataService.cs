@@ -197,7 +197,7 @@ namespace Watering2.Services
             DateTime now = DateTime.Now;
             now = now.AddDays(-MaxHistoryDays);
             DeleteDataPointsFromDate(now);
-            OnPropertyChanged(nameof(wateringData));
+            OnPropertyChanged();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

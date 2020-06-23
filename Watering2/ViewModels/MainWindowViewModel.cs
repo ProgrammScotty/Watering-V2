@@ -19,16 +19,19 @@ namespace Watering2.ViewModels
 
         public TabConfigViewModel ConfigViewModel { get; private set; }
         public TabStatusViewModel StatusViewModel { get; private set; }
+        public TabHistoryPumpViewModel HistoryPumpViewModel { get; private set; }
 
         public MainWindowViewModel()
         {
             ConfigViewModel = null;
+            HistoryPumpViewModel = null;
         }
 
-        public MainWindowViewModel(TabStatusViewModel tabStatusViewModel, TabConfigViewModel tabConfigViewModel, Window topWindow)
+        public MainWindowViewModel(TabStatusViewModel tabStatusViewModel, TabConfigViewModel tabConfigViewModel, TabHistoryPumpViewModel tabHistoryPumpViewModel, Window topWindow)
         {
             ConfigViewModel = tabConfigViewModel;
             StatusViewModel = tabStatusViewModel;
+            HistoryPumpViewModel = tabHistoryPumpViewModel;
 
             _topWindow = topWindow;
 

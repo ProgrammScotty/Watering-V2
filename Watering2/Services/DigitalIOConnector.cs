@@ -50,7 +50,7 @@ namespace Watering2.Services
 
         public bool ReadRainSensorDetectsRain()
         {
-            return _gpioCtrl.Read(PinRainensor) == PinValue.High;
+            return _gpioCtrl.Read(PinRainensor) == PinValue.Low;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

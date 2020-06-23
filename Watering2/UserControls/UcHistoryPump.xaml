@@ -1,0 +1,80 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:Watering2.Models;assembly=Watering2"
+             xmlns:conv="clr-namespace:Watering2.ValueConverters"
+             xmlns:vm="clr-namespace:Watering2.ViewModels"
+             xmlns:dd="clr-namespace:Watering2.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="720" d:DesignHeight="450"
+             x:Class="Watering2.UserControls.UcHistoryPump"
+             d:DataContext="{x:Static dd:DesignViewModel.HistoryPumpViewModel}"
+             >
+  
+    <UserControl.Styles>
+    <Style Selector="TextBlock">
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="FontFamily" Value="Verdana"/>
+    </Style>
+    <Style Selector="TextBlock.firstRow">
+      <Setter Property="Background" Value="LightBlue"/>
+    </Style>
+  </UserControl.Styles>
+  
+  <UserControl.Resources>
+    <conv:DateTimeValueConverter x:Key="TimestampConverter" />
+    <conv:NumericValueConverter x:Key="NumericConverter" />
+    <conv:SecondToMinSecValueConverter x:Key="SecondsConverter" />
+    <conv:BoolValueConverter x:Key="BoolConverter" />
+  </UserControl.Resources>
+
+  <UserControl.DataTemplates>
+    <DataTemplate DataType="{x:Type models:WateringData}">
+      <Grid Margin="0,0,0,10">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="150"/>
+          <ColumnDefinition Width="Auto" MinWidth="45"/>
+          <ColumnDefinition Width="56"/>
+          <ColumnDefinition Width="Auto" MinWidth="45"/>
+          <ColumnDefinition Width="36"/>
+          <ColumnDefinition Width="Auto" MinWidth="45"/>
+          <ColumnDefinition Width="36"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding TimeStamp, Mode=OneWay, Converter={StaticResource TimestampConverter}}" Classes="firstRow"/>
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="Gießdauer:" Classes="firstRow"/>
+        <TextBlock Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Text="{Binding Duration, Mode=OneWay, Converter={StaticResource SecondsConverter}}" FontWeight="SemiBold" Classes="firstRow"/>
+        <TextBlock Grid.Row="0" Grid.Column="4" Classes="firstRow"/>
+        <TextBlock Grid.Row="0" Grid.Column="5" Classes="firstRow"/>
+        <TextBlock Grid.Row="0" Grid.Column="6" Classes="firstRow"/>
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="Korr. Hitze:"/>
+        <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding CorrHot, Mode=OneWay, Converter={StaticResource NumericConverter}, ConverterParameter=\{0:0.###\}}"/>
+        <TextBlock Grid.Row="1" Grid.Column="3">Korr. Kälte:</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding CorrCold, Mode=OneWay, Converter={StaticResource NumericConverter}, ConverterParameter=\{0:0.###\}}"/>
+        <TextBlock Grid.Row="1" Grid.Column="5" Text="Not Bew:" />
+        <TextBlock Grid.Row="1" Grid.Column="6" Text="{Binding EmergencyWatering, Mode=OneWay, Converter={StaticResource BoolConverter}}" />
+        <TextBlock Grid.Row="2" Grid.Column="1">Anz. Messpunkte:</TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding SamplesCount}"/>
+        <TextBlock Grid.Row="3" Grid.Column="1">Anz. Heiß:</TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding SamplesHot}"/>
+        <TextBlock Grid.Row="3" Grid.Column="3">Anz. Kalt:</TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="4" Text="{Binding SamplesCold}"/>
+        <TextBlock Grid.Row="3" Grid.Column="5">Anz. Regen:</TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="6" Text="{Binding DurationRain}"/>
+      </Grid>
+    </DataTemplate>
+  </UserControl.DataTemplates>
+
+  <StackPanel Width="720">
+    <ScrollViewer VerticalScrollBarVisibility="Visible" Width="558" Height="350" >
+      <ItemsControl Items="{Binding HistoryPumpViewModel.DataList}"  />
+    </ScrollViewer>
+  </StackPanel>
+  
+</UserControl>

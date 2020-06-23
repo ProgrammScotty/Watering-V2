@@ -17,15 +17,18 @@
   </ItemGroup>
   <ItemGroup>
     <AvaloniaResource Remove="UserControls\UcConfiguration.xaml" />
+    <AvaloniaResource Remove="UserControls\UcHistoryPump.xaml" />
     <AvaloniaResource Remove="UserControls\UcStatus.xaml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="UserControls\UcConfiguration.xaml" />
+    <None Remove="UserControls\UcHistoryPump.xaml" />
     <None Remove="UserControls\UcStatus.xaml" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.9.10" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="0.9.10" />
     <PackageReference Include="Avalonia.Desktop" Version="0.9.10" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.10" />
     <PackageReference Include="Avalonia.Skia" Version="0.9.10" />
@@ -51,6 +54,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UserControls\UcStatus.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UserControls\UcHistoryPump.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>

@@ -40,16 +40,16 @@
   <StackPanel Width="750">
     <TabControl Name="TabCtrl">
       <TabItem Header="Status" Name="TabStatus">
-        <uc:UcStatus Margin="10,10,0,0" />
+         <uc:UcStatus Margin="10,10,0,0" />
       </TabItem>
       <TabItem Header="Konfiguration" Name="TabConfiguration">
-          <uc:UcConfiguration  Margin="10,10,0,0"/>
+         <uc:UcConfiguration  Margin="10,10,0,0"/>
       </TabItem>
       <TabItem Header="Wetterwerte" Name="TabHistoryReadings" Margin="0,0,0,0">
 
       </TabItem>
       <TabItem Header="Bewässerung" Name="TabHistoryPump">
-
+         <uc:UcHistoryPump Margin="10,10,0,0"/>
       </TabItem>
       <TabItem Header="Statistik" Name="TabStatistics" Margin="0,0,0,0" HorizontalAlignment="Left" HorizontalContentAlignment="Left">
 
