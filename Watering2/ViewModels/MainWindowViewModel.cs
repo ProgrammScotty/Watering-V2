@@ -20,6 +20,7 @@ namespace Watering2.ViewModels
         public TabConfigViewModel ConfigViewModel { get; private set; }
         public TabStatusViewModel StatusViewModel { get; private set; }
         public TabHistoryPumpViewModel HistoryPumpViewModel { get; private set; }
+        public TabHistoryViewModel HistoryViewModel { get; private set; }
 
         public MainWindowViewModel()
         {
@@ -27,11 +28,12 @@ namespace Watering2.ViewModels
             HistoryPumpViewModel = null;
         }
 
-        public MainWindowViewModel(TabStatusViewModel tabStatusViewModel, TabConfigViewModel tabConfigViewModel, TabHistoryPumpViewModel tabHistoryPumpViewModel, Window topWindow)
+        public MainWindowViewModel(TabStatusViewModel tabStatusViewModel, TabConfigViewModel tabConfigViewModel, TabHistoryPumpViewModel tabHistoryPumpViewModel, TabHistoryViewModel tabHistoryViewModel,  Window topWindow)
         {
             ConfigViewModel = tabConfigViewModel;
             StatusViewModel = tabStatusViewModel;
             HistoryPumpViewModel = tabHistoryPumpViewModel;
+            HistoryViewModel = tabHistoryViewModel;
 
             _topWindow = topWindow;
 

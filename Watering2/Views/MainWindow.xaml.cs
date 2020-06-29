@@ -45,8 +45,8 @@ namespace Watering2.Views
 
         private void MainTabCtrl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //if (_historyTabItem != null && _historyTabItem.IsSelected)
-            //    _viewModelMainWnd.HistoryViewModel.UpdateReadingHistory();
+            if (_historyTabItem != null && _historyTabItem.IsSelected)
+                _viewModelMainWnd.HistoryViewModel.UpdateReadingHistory();
             if (_pumpHistoryTabItem != null && _pumpHistoryTabItem.IsSelected)
                 _viewModelMainWnd.HistoryPumpViewModel.UpdatePumpHistory();
             //else if (_statisticsTabItem != null && _statisticsTabItem.IsSelected)

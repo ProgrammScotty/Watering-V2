@@ -32,13 +32,13 @@
     <DataTemplate DataType="{x:Type models:WateringData}">
       <Grid Margin="0,0,0,10">
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="150"/>
-          <ColumnDefinition Width="Auto" MinWidth="45"/>
-          <ColumnDefinition Width="56"/>
-          <ColumnDefinition Width="Auto" MinWidth="45"/>
-          <ColumnDefinition Width="36"/>
-          <ColumnDefinition Width="Auto" MinWidth="45"/>
-          <ColumnDefinition Width="36"/>
+          <ColumnDefinition Width="Auto" MinWidth="170"/>
+          <ColumnDefinition Width="120" />
+          <ColumnDefinition Width="40"/>
+          <ColumnDefinition Width="80"/>
+          <ColumnDefinition Width="40"/>
+          <ColumnDefinition Width="90"/>
+          <ColumnDefinition Width="Auto" MinWidth="50"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto" />
@@ -72,7 +72,7 @@
   </UserControl.DataTemplates>
 
   <StackPanel Width="720">
-    <ScrollViewer VerticalScrollBarVisibility="Visible" Width="558" Height="350" >
+    <ScrollViewer VerticalScrollBarVisibility="Visible" Width="650" Height="350"  HorizontalAlignment="Left">
       <ItemsControl Items="{Binding HistoryPumpViewModel.DataList}"  />
     </ScrollViewer>
   </StackPanel>

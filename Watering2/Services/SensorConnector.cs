@@ -81,7 +81,8 @@ namespace Watering2.Services
 
         public bool StartReading()
         {
-            _mainTimer.Change(0, _cfgCtrl.Configuration.PumpDurationMainCycle*1000);
+            //_mainTimer.Change(0, _cfgCtrl.Configuration.MeasurementFrequency * 1000);
+            _mainTimer.Change(0, _readingInterval);
             return true;
         }
 
@@ -159,12 +160,14 @@ namespace Watering2.Services
         {
             int newReadingInterval = _cfgCtrl.Configuration.MeasurementFrequency;
             newReadingInterval *= 1000;
+            
             if (newReadingInterval == _readingInterval)
                 return;
 
+            if (_debugMode) return;
+
             _readingInterval = newReadingInterval;
-            _mainTimer.Change(Timeout.Infinite, Timeout.Infinite);
-            ReadSensor(null);
+            _mainTimer.Change(0, _readingInterval);
         }
 
         public void Dispose()

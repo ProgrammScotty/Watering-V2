@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants></DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="**\*.xaml.cs">
@@ -19,19 +19,21 @@
     <AvaloniaResource Remove="UserControls\UcConfiguration.xaml" />
     <AvaloniaResource Remove="UserControls\UcHistoryPump.xaml" />
     <AvaloniaResource Remove="UserControls\UcStatus.xaml" />
+    <AvaloniaResource Remove="UserControls\UcWeatherHistory.xaml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="UserControls\UcConfiguration.xaml" />
     <None Remove="UserControls\UcHistoryPump.xaml" />
     <None Remove="UserControls\UcStatus.xaml" />
+    <None Remove="UserControls\UcWeatherHistory.xaml" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.9.10" />
-    <PackageReference Include="Avalonia.Controls.DataGrid" Version="0.9.10" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.9.10" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.10" />
-    <PackageReference Include="Avalonia.Skia" Version="0.9.10" />
+    <PackageReference Include="Avalonia" Version="0.9.11" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="0.9.11" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.9.11" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.11" />
+    <PackageReference Include="Avalonia.Skia" Version="0.9.11" />
     <PackageReference Include="Avalonia.Skia.Linux.Natives" Version="1.68.0.2" />
     <PackageReference Include="Microsoft.Configuration.ConfigurationBuilders.Base" Version="2.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
@@ -64,6 +66,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DbContext\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UserControls\UcWeatherHistory.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bmxx80\Bmxx80.csproj" />

@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Device.Gpio" Version="1.0.0" />
-    <PackageReference Include="UnitsNet" Version="4.65.0" />
+    <PackageReference Include="UnitsNet" Version="4.66.0" />
   </ItemGroup>
 
 </Project>

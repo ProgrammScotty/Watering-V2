@@ -1,0 +1,67 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:Watering2.Models;assembly=Watering2"
+             xmlns:conv="clr-namespace:Watering2.ValueConverters"
+             xmlns:vm="clr-namespace:Watering2.ViewModels"
+             xmlns:dd="clr-namespace:Watering2.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="720" d:DesignHeight="450"
+             x:Class="Watering2.UserControls.UcWeatherHistory"
+             d:DataContext="{x:Static dd:DesignViewModel.HistoryViewModel}"
+             Width="720" Height="350">
+
+  <UserControl.Resources>
+    <conv:DateTimeValueConverter x:Key="TimestampConverter" />
+    <conv:BoolValueConverter x:Key="BoolConverter" />
+    <conv:NumericValueConverter x:Key="NumericConverter" />
+  </UserControl.Resources>
+
+  <UserControl.Styles>
+    <Style Selector="TextBlock.values">
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="FontFamily" Value="Verdana"/>
+      <Setter Property="HorizontalAlignment" Value="Right"/>
+    </Style>
+    <Style Selector="TextBlock.time">
+      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="FontFamily" Value="Verdana"/>
+      <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+  </UserControl.Styles>
+
+    <DataGrid Items="{Binding HistoryViewModel.WeatherDataList}" 
+              IsReadOnly="True" 
+              CanUserResizeColumns="True" >
+      <DataGrid.Columns>
+        <DataGridTextColumn
+          Header="Time"
+          Binding="{Binding TimeStamp, Converter={StaticResource TimestampConverter}}"
+          Width="2*" 
+          />
+        <DataGridTextColumn
+          Header="Temperatur"
+          Binding="{Binding Temperature, Converter={StaticResource NumericConverter}, ConverterParameter=\{0:0.00 °C\}}"
+          Width="*"
+        />
+        <DataGridTextColumn
+          Header="Feuchte"
+          Binding="{Binding Humidity, Converter={StaticResource NumericConverter}, ConverterParameter={}{0:F2} %}}"
+          Width="*"
+        />
+        <DataGridTextColumn 
+          Header="Luftduck"
+          Binding="{Binding Pressure, Converter={StaticResource NumericConverter}, ConverterParameter=\{0:0.00 hPas\}}"
+          Width="*"
+        />
+        <DataGridTextColumn
+          Header="Regen"
+          Binding="{Binding Raining, Converter={StaticResource BoolConverter}}"
+          Width="*"
+        />
+      </DataGrid.Columns>
+    </DataGrid>
+
+    
+    
+  </UserControl>
