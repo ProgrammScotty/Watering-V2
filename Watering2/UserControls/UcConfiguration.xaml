@@ -15,7 +15,7 @@
   </UserControl.Resources>
 
   <StackPanel Width="720">
-    <Grid ColumnDefinitions="140,65,80,5,140,65,*" RowDefinitions="*,*,*,*,*,*,*,*,*,50,*,*">
+    <Grid ColumnDefinitions="145,65,80,5,142,65,*" RowDefinitions="*,*,*,*,*,*,*,*,*,*,50,*,*">
       <TextBlock Grid.Row="0" Grid.Column="0" Text="Abstand Messungen:" Margin="0,5,2,0" />
       <TextBox Grid.Row="0" Grid.Column="1" x:Name="measureDuration" Text="{Binding ConfigViewModel.MeasurementFrequency}" TextAlignment="Center"/>
       <TextBlock Grid.Row="0" Grid.Column="2" Text="sec"  Margin="2,5,2,0"/>
@@ -33,43 +33,47 @@
       <TextBlock Grid.Row="2" Grid.Column="0" Text="Beginn Auswertung:" Margin="0,5,2,0"/>
       <TextBox Grid.Row="2" Grid.Column="1" x:Name="measureStart" Text="{Binding Path=ConfigViewModel.BeginMonitoring, Mode=TwoWay, Converter={StaticResource TimeSpanConverter}}" TextAlignment="Center" Margin="0,2,0,0"/>
       <TextBlock Grid.Row="2" Grid.Column="2" Text="h:m:s" Margin="2,5,2,0"/>
-      <TextBlock Grid.Row="2" Grid.Column="4" Text="Ende Auswertung:" Margin="0,5,2,0"/>
-      <TextBox Grid.Row="2" Grid.Column="5" x:Name="measureEnd" Text="{Binding Path=ConfigViewModel.EndMonitoring, Mode=TwoWay, Converter={StaticResource TimeSpanConverter}}" TextAlignment="Center" Margin="0,2,0,0"/>
+      <TextBlock Grid.Row="2" Grid.Column="4" Text="Beg Ausw Nachmittag:" Margin="0,5,2,0"/>
+      <TextBox Grid.Row="2" Grid.Column="5" x:Name="measureStartAfternoon" Text="{Binding Path=ConfigViewModel.BeginAfternoonMonitoring, Mode=TwoWay, Converter={StaticResource TimeSpanConverter}}" TextAlignment="Center" Margin="0,2,0,0"/>
       <TextBlock Grid.Row="2" Grid.Column="6" Text="h:m:s" Margin="2,5,2,0"/>
 
-      <TextBlock Grid.Row="3" Grid.Column="0" Text="Schwellwert Hitze:" Margin="0,5,2,0"/>
-      <TextBox Grid.Row="3" Grid.Column="1" x:Name="levelHot" Text="{Binding Path=ConfigViewModel.LevelHeatTemperature, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
-      <TextBlock Grid.Row="3" Grid.Column="2" Text="°C" Margin="2,5,2,0"/>
-      <TextBlock Grid.Row="3" Grid.Column="4" Text="Korrektur Hitze:"  Margin="0,5,2,0"/>
-      <TextBox Grid.Row="3" Grid.Column="5" x:Name="corrHot" Text="{Binding Path=ConfigViewModel.CorrFactorHeat, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
+      <TextBlock Grid.Row="3" Grid.Column="0" Text="Ende Auswertung:" Margin="0,5,2,0"/>
+      <TextBox Grid.Row="3" Grid.Column="1" x:Name="measureEnd" Text="{Binding Path=ConfigViewModel.EndMonitoring, Mode=TwoWay, Converter={StaticResource TimeSpanConverter}}" TextAlignment="Center" Margin="0,2,0,0"/>
+      <TextBlock Grid.Row="3" Grid.Column="2" Text="h:m:s" Margin="2,5,2,0"/>
 
-      <TextBlock Grid.Row="4" Grid.Column="0" Text="Schwellwert Kälte:" Margin="0,5,2,0"/>
-      <TextBox Grid.Row="4" Grid.Column="1" x:Name="levelCold" Text="{Binding Path=ConfigViewModel.LevelColdTemperature, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
+      <TextBlock Grid.Row="4" Grid.Column="0" Text="Schwellwert Hitze:" Margin="0,5,2,0"/>
+      <TextBox Grid.Row="4" Grid.Column="1" x:Name="levelHot" Text="{Binding Path=ConfigViewModel.LevelHeatTemperature, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
       <TextBlock Grid.Row="4" Grid.Column="2" Text="°C" Margin="2,5,2,0"/>
-      <TextBlock Grid.Row="4" Grid.Column="4" Text="Korrektur Kälte:"  Margin="0,5,2,0"/>
-      <TextBox Grid.Row="4" Grid.Column="5" x:Name="corrCold" Text="{Binding Path=ConfigViewModel.CorrFactorCold, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
+      <TextBlock Grid.Row="4" Grid.Column="4" Text="Korrektur Hitze:"  Margin="0,5,2,0"/>
+      <TextBox Grid.Row="4" Grid.Column="5" x:Name="corrHot" Text="{Binding Path=ConfigViewModel.CorrFactorHeat, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
 
-      <TextBlock Grid.Row="5" Grid.Column="0" Text="Einschaltddauer Pumpe:" Margin="0,5,2,0"/>
-      <TextBox Grid.Row="5" Grid.Column="1" x:Name="pumpDuration" Text="{Binding Path=ConfigViewModel.PumpDurationMainCycle, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
-      <TextBlock Grid.Row="5" Grid.Column="2" Text="sec"  Margin="2,5,2,0"/>
-      <TextBlock Grid.Row="5" Grid.Column="4" Text="2. Einschaltddauer:" Margin="0,5,2,0"/>
-      <TextBox Grid.Row="5" Grid.Column="5" x:Name="pumpDuration2" Text="{Binding Path=ConfigViewModel.PumpDurationSecondCycle, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
-      <TextBlock Grid.Row="5" Grid.Column="6" Text="sec"  Margin="2,5,2,0"/>
+      <TextBlock Grid.Row="5" Grid.Column="0" Text="Schwellwert Kälte:" Margin="0,5,2,0"/>
+      <TextBox Grid.Row="5" Grid.Column="1" x:Name="levelCold" Text="{Binding Path=ConfigViewModel.LevelColdTemperature, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
+      <TextBlock Grid.Row="5" Grid.Column="2" Text="°C" Margin="2,5,2,0"/>
+      <TextBlock Grid.Row="5" Grid.Column="4" Text="Korrektur Kälte:"  Margin="0,5,2,0"/>
+      <TextBox Grid.Row="5" Grid.Column="5" x:Name="corrCold" Text="{Binding Path=ConfigViewModel.CorrFactorCold, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
 
-      <TextBlock Grid.Row="6" Grid.Column="0" Text="Max. Dauer Regen:" Margin="0,5,2,0"/>
-      <TextBox Grid.Row="6" Grid.Column="1" x:Name="durationRain" Text="{Binding Path=ConfigViewModel.RainDurationToStopWatering, Mode=TwoWay, Converter={StaticResource TimeSpanConverter}}" TextAlignment="Center" Margin="0,2,0,0"/>
-      <TextBlock Grid.Row="6" Grid.Column="2" Text="h:m:s" Margin="2,5,2,0"/>
-      <TextBlock Grid.Row="6" Grid.Column="4" Text="Max Zeit ohne Bew"  Margin="0,5,2,0"/>
-      <TextBox Grid.Row="6" Grid.Column="5" x:Name="maxDaysWithoutWatering" Text="{Binding Path=ConfigViewModel.MaxDaysWithoutWatering, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
-      <TextBlock Grid.Row="6" Grid.Column="6" Text="Tage"  Margin="2,5,2,0"/>
+      <TextBlock Grid.Row="6" Grid.Column="0" Text="Einschaltddauer Pumpe:" Margin="0,5,2,0"/>
+      <TextBox Grid.Row="6" Grid.Column="1" x:Name="pumpDuration" Text="{Binding Path=ConfigViewModel.PumpDurationMainCycle, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
+      <TextBlock Grid.Row="6" Grid.Column="2" Text="sec"  Margin="2,5,2,0"/>
+      <TextBlock Grid.Row="6" Grid.Column="4" Text="2. Einschaltddauer:" Margin="0,5,2,0"/>
+      <TextBox Grid.Row="6" Grid.Column="5" x:Name="pumpDuration2" Text="{Binding Path=ConfigViewModel.PumpDurationSecondCycle, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
+      <TextBlock Grid.Row="6" Grid.Column="6" Text="sec"  Margin="2,5,2,0"/>
 
-      <TextBlock Grid.Row="7" Grid.Column="0" Text="2. Gießen aktiv:" Margin="0,5,2,0"/>
-      <CheckBox Grid.Row="7" Grid.Column="1" IsChecked="{Binding ConfigViewModel.SecondWateringActive}" />
+      <TextBlock Grid.Row="7" Grid.Column="0" Text="Max. Dauer Regen:" Margin="0,5,2,0"/>
+      <TextBox Grid.Row="7" Grid.Column="1" x:Name="durationRain" Text="{Binding Path=ConfigViewModel.RainDurationToStopWatering, Mode=TwoWay, Converter={StaticResource TimeSpanConverter}}" TextAlignment="Center" Margin="0,2,0,0"/>
+      <TextBlock Grid.Row="7" Grid.Column="2" Text="h:m:s" Margin="2,5,2,0"/>
+      <TextBlock Grid.Row="7" Grid.Column="4" Text="Max Zeit ohne Bew"  Margin="0,5,2,0"/>
+      <TextBox Grid.Row="7" Grid.Column="5" x:Name="maxDaysWithoutWatering" Text="{Binding Path=ConfigViewModel.MaxDaysWithoutWatering, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
+      <TextBlock Grid.Row="7" Grid.Column="6" Text="Tage"  Margin="2,5,2,0"/>
 
-      <TextBlock Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="7" Text="{Binding ConfigViewModel.ValidationErrorText}" Margin="0,5,0,5"/>
+      <TextBlock Grid.Row="8" Grid.Column="0" Text="2. Gießen aktiv:" Margin="0,5,2,0"/>
+      <CheckBox Grid.Row="8" Grid.Column="1" IsChecked="{Binding ConfigViewModel.SecondWateringActive}" />
 
-      <Button Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" Content="Speichern" Command="{Binding ConfigViewModel.SaveConfigurationCmd}" Width="200" HorizontalAlignment="Center"/>
-      <Button Grid.Row="10" Grid.Column="4" Grid.ColumnSpan="2" Content="Änderungen verwerfen" Command="{Binding ConfigViewModel.RestoreConfigurationCmd}" Width="200" HorizontalAlignment="Center"/>
+      <TextBlock Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="7" Text="{Binding ConfigViewModel.ValidationErrorText}" Margin="0,5,0,5"/>
+
+      <Button Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="2" Content="Speichern" Command="{Binding ConfigViewModel.SaveConfigurationCmd}" Width="200" HorizontalAlignment="Center"/>
+      <Button Grid.Row="11" Grid.Column="4" Grid.ColumnSpan="2" Content="Änderungen verwerfen" Command="{Binding ConfigViewModel.RestoreConfigurationCmd}" Width="200" HorizontalAlignment="Center"/>
     </Grid>
   </StackPanel>
   

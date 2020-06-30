@@ -116,6 +116,13 @@ namespace Watering2.Models
             set { this["BeginMonitoring"] = value; OnPropertyChanged(nameof(BeginMonitoring));}
         }
 
+        [ConfigurationProperty("BeginAfternoonMonitoring", DefaultValue = "13:0:0", IsRequired = true)]
+        public TimeSpan BeginAfternoonMonitoring
+        {
+            get => (TimeSpan)this["BeginAfternoonMonitoring"];
+            set { this["BeginAfternoonMonitoring"] = value; OnPropertyChanged(nameof(BeginAfternoonMonitoring)); }
+        }
+
         [ConfigurationProperty("EndMonitoring", DefaultValue = "19:0:0", IsRequired = true)]
         public TimeSpan EndMonitoring
         {

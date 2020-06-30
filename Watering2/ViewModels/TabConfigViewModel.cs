@@ -28,6 +28,7 @@ namespace Watering2.ViewModels
         private double _corrFactorCold;
         private int _measurementFrequency;
         private TimeSpan _beginMonitoring;
+        private TimeSpan _beginAfternoonMonitoring;
         private TimeSpan _endMonitoring;
         private TimeSpan _rainDurationToStopWatering;
         private double _percentageHotFor2ndWateringActive;
@@ -43,8 +44,10 @@ namespace Watering2.ViewModels
         public ValidationHelper MeasurementIntervalRule { get; }
         public ValidationHelper WateringTimeRule { get; }
         public ValidationHelper MeasureStartTimeRule { get; }
+        public ValidationHelper MeasureStartAfternoonTimeRule { get; }
         public ValidationHelper MeasureEndTimeRule { get; }
         public ValidationHelper MeasureIntervalRule { get; }
+        public ValidationHelper MeasureIntervalAfternoonRule { get; }
         public ValidationHelper LevelHotTempRule { get; }
         public ValidationHelper CorrectionHotRule { get; }
         public ValidationHelper LevelColdTempRule { get; }
@@ -75,17 +78,22 @@ namespace Watering2.ViewModels
 
             WateringTimeRule = this.ValidationRule(
                 viewmodel => viewmodel.StartWateringMainCycle,
-                time => time.Days == 0 && time.Hours >= 0 && time.Minutes >= 0 && time.Seconds >= 0 && time.Days == 0,
+                time => time.Days == 0 && time.Hours >= 0 && time.Minutes >= 0 && time.Seconds >= 0,
                 time => $"Ungültiger Zeitpunkt für das Gießen ({time})");
 
             MeasureStartTimeRule = this.ValidationRule(
                 viewmodel => viewmodel.BeginMonitoring,
-                time => time.Days == 0 && time.Hours >= 0 && time.Minutes >= 0 && time.Seconds >= 0 && time.Days == 0,
+                time => time.Days == 0 && time.Hours >= 0 && time.Minutes >= 0 && time.Seconds >= 0,
                 time => $"Ungültiger Zeitpunkt für den Beginn der Auswertung ({time})");
+
+            MeasureStartAfternoonTimeRule = this.ValidationRule(
+                viewmodel => viewmodel.BeginAfternoonMonitoring,
+                time => time.Days == 0 && time.Hours >= 0 && time.Minutes >= 0 && time.Seconds >= 0,
+                time => $"Ungültiger Zeitpunkt für den Beginn der Auswertung am Nachmittag ({time})");
 
             MeasureEndTimeRule = this.ValidationRule(
                 viewmodel => viewmodel.EndMonitoring,
-                time => time.Days == 0 && time.Hours >= 0 && time.Minutes >= 0 && time.Seconds >= 0 && time.Days == 0,
+                time => time.Days == 0 && time.Hours >= 0 && time.Minutes >= 0 && time.Seconds >= 0,
                 time => $"Ungültiger Zeitpunkt für das Ende der Auswertung ({time})");
 
             var startAndEndTimeValid = this
@@ -95,6 +103,14 @@ namespace Watering2.ViewModels
             MeasureIntervalRule = this.ValidationRule(
                 _ => startAndEndTimeValid,
                 (vm, state) => !state ? "Start time later then end time" : string.Empty);
+
+            var startAfternoonTimeValid = this
+                .WhenAnyValue(x => x.BeginAfternoonMonitoring, x => x.BeginMonitoring, x => x.EndMonitoring, (beginAfternoon, begin, end) => new {Begin = begin, BeginAfternoon = beginAfternoon, End = end})
+                .Select(x => x.End - x.BeginAfternoon > new TimeSpan(0, 0, 0) && x.BeginAfternoon - x.Begin > new TimeSpan(0, 0, 0));
+
+            MeasureIntervalAfternoonRule = this.ValidationRule(
+                _ => startAfternoonTimeValid,
+                (vm, state) => !state ? "Start time for afternoon does not fit to start and end time" : string.Empty);
 
             LevelHotTempRule = this.ValidationRule(
                 viewmodel => viewmodel.LevelHeatTemperature,
@@ -156,6 +172,7 @@ namespace Watering2.ViewModels
             _corrFactorCold = _cfgController.Configuration.CorrFactorCold;
             _measurementFrequency = _cfgController.Configuration.MeasurementFrequency;
             _beginMonitoring = _cfgController.Configuration.BeginMonitoring;
+            _beginAfternoonMonitoring = _cfgController.Configuration.BeginAfternoonMonitoring;
             _endMonitoring = _cfgController.Configuration.EndMonitoring;
             _rainDurationToStopWatering = _cfgController.Configuration.RainDurationToStopWatering;
             _percentageHotFor2ndWateringActive = _cfgController.Configuration.PercentageHotFor2ndWateringActive;
@@ -175,6 +192,7 @@ namespace Watering2.ViewModels
             _cfgController.Configuration.CorrFactorCold = _corrFactorCold;
             _cfgController.Configuration.MeasurementFrequency = _measurementFrequency;
             _cfgController.Configuration.BeginMonitoring = _beginMonitoring;
+            _cfgController.Configuration.BeginAfternoonMonitoring = _beginAfternoonMonitoring;
             _cfgController.Configuration.EndMonitoring = _endMonitoring;
             _cfgController.Configuration.RainDurationToStopWatering = _rainDurationToStopWatering;
             _cfgController.Configuration.PercentageHotFor2ndWateringActive = _percentageHotFor2ndWateringActive;
@@ -195,6 +213,7 @@ namespace Watering2.ViewModels
             CorrFactorCold = _cfgController.Configuration.CorrFactorCold;
             MeasurementFrequency = _cfgController.Configuration.MeasurementFrequency;
             BeginMonitoring = _cfgController.Configuration.BeginMonitoring;
+            BeginAfternoonMonitoring = _cfgController.Configuration.BeginAfternoonMonitoring;
             EndMonitoring = _cfgController.Configuration.EndMonitoring;
             RainDurationToStopWatering = _cfgController.Configuration.RainDurationToStopWatering;
             PercentageHotFor2ndWateringActive = _cfgController.Configuration.PercentageHotFor2ndWateringActive;
@@ -236,6 +255,12 @@ namespace Watering2.ViewModels
         {
             get => _beginMonitoring;
             set => this.RaiseAndSetIfChanged(ref _beginMonitoring, value);
+        }
+
+        public TimeSpan BeginAfternoonMonitoring
+        {
+            get => _beginAfternoonMonitoring;
+            set => this.RaiseAndSetIfChanged(ref _beginAfternoonMonitoring, value);
         }
 
         public int MeasurementFrequency

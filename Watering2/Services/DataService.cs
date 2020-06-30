@@ -9,6 +9,8 @@ using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Watering2.DbContext;
 using Watering2.Models;
+using Serilog;
+using Serilog.Core;
 
 namespace Watering2.Services
 {
@@ -16,6 +18,7 @@ namespace Watering2.Services
     {
         private const int MaxHistoryDays = 14;
         private object _lock = new object();
+        private ILogger _logger = Log.ForContext<DataService>();
 
         public void SaveReadingPoint(Measurement readingPoint)
         {
@@ -24,8 +27,7 @@ namespace Watering2.Services
 
             if (!lockTaken)
             {
-                //Terminal.Settings.DisplayLoggingMessageType = LogMessageType.Info | LogMessageType.Warning | LogMessageType.Error | LogMessageType.Fatal | LogMessageType.Debug;
-                //$"Lock not taken".Warn("SaveReadingData", null, string.Empty);
+                _logger.Warning("SaveReadingData: Could not lock");
                 return;
             }
 
@@ -46,8 +48,8 @@ namespace Watering2.Services
 
             if (!lockTaken)
             {
-                //Terminal.Settings.DisplayLoggingMessageType = LogMessageType.Info | LogMessageType.Warning | LogMessageType.Error | LogMessageType.Fatal | LogMessageType.Debug;
                 //$"Lock not taken".Warn("GetReadingPointsByStartAndEndTime", $"start: {startTime:d/M/yy hh:mm} end: {endTime:d/M/yy hh:mm}", string.Empty);
+                _logger.Warning("GetReadingPointsByStartAndEndTime: Could not lock");
                 return new List<Measurement>();
             }
 
@@ -65,8 +67,7 @@ namespace Watering2.Services
 
             if (!lockTaken)
             {
-                //Terminal.Settings.DisplayLoggingMessageType = LogMessageType.Info | LogMessageType.Warning | LogMessageType.Error | LogMessageType.Fatal | LogMessageType.Debug;
-                //$"Lock not taken".Warn("GetReadingPointsFirst", number, string.Empty);
+                _logger.Warning("GetReadingPointsFirst: Could not lock");
                 return new List<Measurement>();
             }
 
@@ -93,8 +94,7 @@ namespace Watering2.Services
 
             if (!lockTaken)
             {
-                //Terminal.Settings.DisplayLoggingMessageType = LogMessageType.Info | LogMessageType.Warning | LogMessageType.Error | LogMessageType.Fatal | LogMessageType.Debug;
-                //$"Lock not taken".Warn("GetTracePointsFirst", number, string.Empty);
+                _logger.Warning("GetTracePointsFirst: Could not lock");
                 return new List<WateringData>();
             }
 
@@ -125,8 +125,7 @@ namespace Watering2.Services
 
             if (!lockTaken)
             {
-                //Terminal.Settings.DisplayLoggingMessageType = LogMessageType.Info | LogMessageType.Warning | LogMessageType.Error | LogMessageType.Fatal | LogMessageType.Debug;
-                //$"Lock not taken".Warn("EmergencyWateringNecessary", days, string.Empty);
+                _logger.Warning("EmergencyWateringNecessary: Could not lock");
                 return false;
             }
 
@@ -147,8 +146,7 @@ namespace Watering2.Services
 
             if (!lockTaken)
             {
-                //Terminal.Settings.DisplayLoggingMessageType = LogMessageType.Info | LogMessageType.Warning | LogMessageType.Error | LogMessageType.Fatal | LogMessageType.Debug;
-                //$"Lock not taken".Warn("DeleteDataPointsFromDate", $"{deleteOlderThan:d/M/yy hh:mm}", string.Empty);
+                _logger.Warning("DeleteDataPointsFromDate: Could not lock");
                 return;
             }
 
@@ -182,8 +180,7 @@ namespace Watering2.Services
 
             if (!lockTaken)
             {
-                //Terminal.Settings.DisplayLoggingMessageType = LogMessageType.Info | LogMessageType.Warning | LogMessageType.Error | LogMessageType.Fatal | LogMessageType.Debug;
-                //$"Lock not taken".Error("SaveWateringData", null, string.Empty);
+                _logger.Warning("SaveWateringData: Could not lock");
                 return;
             }
 

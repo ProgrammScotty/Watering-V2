@@ -8,6 +8,7 @@ using System.Threading;
 using JetBrains.Annotations;
 using Watering2.Configuration;
 using Watering2.Models;
+using Serilog;
 
 namespace Watering2.Services
 {
@@ -28,6 +29,8 @@ namespace Watering2.Services
         private bool _debugMode;
         private bool _pumpsActive;
 
+        private ILogger _logger;
+
         //MainCycle: Morning, Secondary: Evening
         private enum WateringEvent { None, SecondaryCycle, MainCycle }
 
@@ -39,6 +42,7 @@ namespace Watering2.Services
 
         public WateringExecution(ConfigController cfgController, DataService wateringDataService, bool debug)
         {
+            _logger = Log.ForContext<WateringExecution>();
             _cfgCtrl = cfgController;
             _wateringDataService = wateringDataService;
             _debugMode = debug;
@@ -123,8 +127,6 @@ namespace Watering2.Services
 
         private WateringCorrection CalcWateringDurationCorrection(DateTime? requDate)
         {
-            //Terminal.Settings.DisplayLoggingMessageType = LogMessageType.Info | LogMessageType.Warning | LogMessageType.Error | LogMessageType.Fatal | LogMessageType.Debug;
-
             bool statistics = requDate.HasValue;
 
             DateTime yesterdayBegin;
@@ -174,10 +176,11 @@ namespace Watering2.Services
 
             if (stopWateringBecauseOfRain)
             {
-                //$"Keine Bewässerung: {durationRain} sec über {stopDuration} sec".Warn("CalcWateringDurationCorrection", $"start: {(endForRain.AddHours(-24)):d/M/yy hh:mm} end: {endForRain:d/M/yy hh:mm}", string.Empty);
+                _logger.Information("Keine Bewässerung: {DurationRain} sec über {StopDuration} sec", durationRain, stopDuration);
+                _logger.Information("Start: {StartRain} Ende: {EndRain}", endForRain.AddHours(-24).ToString("d / M / yy hh: mm"), endForRain.ToString("d / M / yy hh: mm"));
                 if (emergencyWatering)
                 {
-                    //"Not Bewässerung wird ausgeführt".Warn();
+                    _logger.Warning("Not Bewässerung wird ausgeführt");
                 }
             }
 
@@ -192,16 +195,26 @@ namespace Watering2.Services
             }
 
             //Durchschnitts Übertemperatur 40° soll Korrekturwert _corrFactorHot ergeben
-            double corrAdditive = (_cfgCtrl.Configuration.CorrFactorHeat - 1d) / (40d - _cfgCtrl.Configuration.LevelHeatTemperature); 
-            double corrHotNew = hotSamplesCntAfternoon > 0 ? 
-                1d + (tempAboveHotLevelAfternoon / hotSamplesCntAfternoon) * ((double)hotSamplesCntAfternoon / samplesAfternoon.Count) * corrAdditive 
-                : 1;
+            //double corrAdditive = (_cfgCtrl.Configuration.CorrFactorHeat - 1d) / (40d - _cfgCtrl.Configuration.LevelHeatTemperature); 
+            //double corrHotNew = hotSamplesCntAfternoon > 0 ? 
+            //    1d + (tempAboveHotLevelAfternoon / hotSamplesCntAfternoon) * ((double)hotSamplesCntAfternoon / samplesAfternoon.Count) * corrAdditive 
+            //    : 1;
+
+            //statt 40 Grad nun eine Temperatur von 3° über dem Hitzelevel soll den CorrFactorHeat ergeben
+            double maxSumForDeltaXDegrees = samplesAfternoon.Count * 3d;
+            double corrHotNew = (tempAboveHotLevelAfternoon / maxSumForDeltaXDegrees) * _cfgCtrl.Configuration.CorrFactorHeat;
 
             if (corrHotNew < 1d)
             {
-                //$"CorrHot korrigiert: Errechnter Wert: {corrHotNew} ".Warn();
+                _logger.Warning("CorrHot korrigiert: Errechnter Wert: {CorrHotNew}", corrHotNew);
                 corrHotNew = 1d;
             }
+
+            int coldSamplesCntMonitoringHours = samples.Count(point => point.Temperature <= _cfgCtrl.Configuration.LevelColdTemperature);
+
+            double tempBelowColdLevelMonitoringHours = samples.Select(sample => _cfgCtrl.Configuration.LevelColdTemperature - sample.Temperature).Where(diff => diff > 0).Sum();
+            maxSumForDeltaXDegrees = samplesCnt * 5d;
+            double corrColdNew = (tempBelowColdLevelMonitoringHours / maxSumForDeltaXDegrees) * _cfgCtrl.Configuration.CorrFactorCold;
 
             if (statistics)
                 return new WateringCorrection() { CorrFactorHot = stopWateringBecauseOfRain ? emergencyWatering ? 1 : 0 : corrHotNew, RainDuration = durationRain };
@@ -209,7 +222,7 @@ namespace Watering2.Services
             var wateringData = new WateringData()
             {
                 TimeStamp = DateTime.Now,
-                CorrCold = 1,
+                CorrCold = corrColdNew,
                 CorrHot = corrHotNew,
                 SamplesCount = samplesCnt,
                 SamplesHot = hotSamplesCntAfternoon,
@@ -218,14 +231,15 @@ namespace Watering2.Services
                 NoWateringBecauseRain = stopWateringBecauseOfRain,
                 EmergencyWatering = emergencyWatering,
                 PercentageHot = samplesAfternoon.Count > 0 ? (double)hotSamplesCntAfternoon/samplesAfternoon.Count * 100d : 0d,
-                PercentageCold = 0d,
+                PercentageCold = (double)coldSamplesCntMonitoringHours/ samplesCnt * 100d,
                 DurationRain = durationRain
             };
 
             _wateringDataService.SaveWateringData(wateringData);
             return new WateringCorrection()
             {
-                CorrFactorHot = (stopWateringBecauseOfRain ? 0 : corrHotNew),
+                CorrFactorHot = (stopWateringBecauseOfRain ? emergencyWatering ? 1 : 0 : corrHotNew),
+                CorrFactorCold = stopWateringBecauseOfRain ? emergencyWatering ? 1 : 0 : corrColdNew,
                 RainDuration = durationRain
             };
         }
@@ -238,15 +252,13 @@ namespace Watering2.Services
 
         private bool IsSecondWateringNecessary(DateTime? requDate)
         {
-            //Terminal.Settings.DisplayLoggingMessageType = LogMessageType.Info | LogMessageType.Warning | LogMessageType.Error | LogMessageType.Fatal | LogMessageType.Debug;
-
             bool forStatistics = requDate.HasValue;
 
             if (!_cfgCtrl.Configuration.SecondWateringActive && !forStatistics)
                 return false;
 
             var now = requDate ?? DateTime.Today;
-            DateTime nowBeginAfternoon = now.Add(new TimeSpan(13, 0, 0));
+            DateTime nowBeginAfternoon = now.Add(_cfgCtrl.Configuration.BeginAfternoonMonitoring); //now.Add(new TimeSpan(13, 0, 0));
             DateTime nowEnd = now.Add(_cfgCtrl.Configuration.EndMonitoring);
 
             List<Measurement> samples =
@@ -269,13 +281,20 @@ namespace Watering2.Services
             if (percentHot < _cfgCtrl.Configuration.PercentageHotFor2ndWateringActive)
             {
                 TimeToWatering2 = $"Kein 2. Gießen: {percentHot:F1}% über {_cfgCtrl.Configuration.LevelHeatTemperature:##}°";
-                //$"Kein 2. Gießen: {percentHot:F1}% über {_levelHot:##}°".Warn("IsSecondWateringNecessary", $"start: {nowBeginAfternoon:d/M/yy hh:mm} end: {nowEnd:d/M/yy hh:mm}", string.Empty);
-
+                _logger.Information("Kein 2. Gießen: {PercHot} % über {HotLevel}°. Start:{Start} Ende:{Ende}", 
+                    percentHot.ToString("F1"), 
+                    _cfgCtrl.Configuration.LevelHeatTemperature.ToString("##"), 
+                    nowBeginAfternoon.ToString("d / M / yy hh: mm"), 
+                    nowEnd.ToString("d / M / yy hh: mm"));
                 OnPropertyChanged(nameof(TimeToWatering2));
                 return false;
             }
 
-            //$"2. Gießen: {percentHot:F1}% über {_cfgCtrl.Configuration.LevelHeatTemperature:##}°".Info("IsSecondWateringNecessary", $"start: {nowBeginAfternoon:d/M/yy hh:mm} end: {nowEnd:d/M/yy hh:mm}", string.Empty);
+            _logger.Information("2. Gießen: {PercHot} % über {HotLevel}°. Start:{Start} Ende:{Ende}",
+                percentHot.ToString("F1"),
+                _cfgCtrl.Configuration.LevelHeatTemperature.ToString("##"),
+                nowBeginAfternoon.ToString("d / M / yy hh: mm"),
+                nowEnd.ToString("d / M / yy hh: mm"));
 
             var traceData = new WateringData()
             {
@@ -295,11 +314,22 @@ namespace Watering2.Services
 
         private void StartPrimaryWatering(object state)
         {
-            int duration = Convert.ToInt32(_cfgCtrl.Configuration.PumpDurationMainCycle * CalcWateringDurationCorrection(null).CorrFactorHot * 1000);  //msec
+            WateringCorrection wateringCorrection = CalcWateringDurationCorrection(null);
+            double correction;
+            if (wateringCorrection.CorrFactorHot == 0d || wateringCorrection.CorrFactorCold == 0d)
+                correction = 0;
+            else if (wateringCorrection.CorrFactorHot > 1)
+                correction = wateringCorrection.CorrFactorHot;
+            else if(wateringCorrection.CorrFactorCold < 1)
+                correction = wateringCorrection.CorrFactorCold;
+            else
+                correction = 1d;
+
+            int duration = Convert.ToInt32(_cfgCtrl.Configuration.PumpDurationMainCycle * correction * 1000);  //msec
             if (duration == 0)
             {
                 StopPrimaryWatering(null);
-                //"Bewässerung wurde nicht ausgelöst: Korr: 0".Warn();
+                _logger.Warning("Primary watering wurde nicht ausgelöst: Korr: 0");
                 return;
             }
 
@@ -309,6 +339,7 @@ namespace Watering2.Services
             if (!_debugMode)
             {
                 DigitalIOConnector.Instance.TurnOnPump();
+                _logger.Verbose("Pumpe wird eingeschaltet (primary watering)");
             }
 
             if (_mainPumpTimer == null)
@@ -322,6 +353,9 @@ namespace Watering2.Services
         {
             if (!_debugMode) DigitalIOConnector.Instance.TurnOffPump();
             var delay = CalculateTimeToMainWatering();
+            
+            _logger.Verbose("Pumpe wird ausgeschaltet (primary watering). Next watering: {Delay}", delay);
+
             _mainTimer.Change(delay, Timeout.Infinite);
             _pumpsActive = false;
             _wateringEvent = WateringEvent.None;
@@ -330,7 +364,6 @@ namespace Watering2.Services
 
         private void StartSecondaryWatering(object state)
         {
-            //$"Entering StartEveningWatering: active: {_secondWateringActive} default duration: {_wateringDuration2}".Info();
             if (!_cfgCtrl.Configuration.SecondWateringActive)
                 return;
 
@@ -346,6 +379,7 @@ namespace Watering2.Services
             if (!_debugMode)
             {
                 DigitalIOConnector.Instance.TurnOnPump();
+                _logger.Verbose("Pumpe wird eingeschaltet (secondary watering)");
             }
 
             if (_eveningPumpTimer == null)
@@ -358,8 +392,9 @@ namespace Watering2.Services
         private void StopSecondaryWatering(object state)
         {
             var delay = CalculateTimeToSecondWatering();
-            //$"Entering StopEveningWatering: next watering: {delay}".Info();
             if (!_debugMode) DigitalIOConnector.Instance.TurnOffPump();
+            _logger.Verbose("Pumpe wird ausgeschaltet (secondary watering). Next watering: {Delay}",delay);
+
             _eveningTimer.Change(delay, Timeout.Infinite);
             _pumpsActive = false;
             _wateringEvent = WateringEvent.None;

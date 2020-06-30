@@ -6,6 +6,9 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using Serilog;
+using Serilog.Events;
+using Serilog.Exceptions;
 using Watering2.Configuration;
 using Watering2.Models;
 using Watering2.Services;
@@ -39,6 +42,19 @@ namespace Watering2
 
             if (!Design.IsDesignMode)
             {
+                Log.Logger = new LoggerConfiguration()
+                    .Enrich.WithThreadId()
+                    .Enrich.FromLogContext()
+                    .Enrich.WithExceptionDetails()
+                    .MinimumLevel.Debug()
+                    .WriteTo.File("Watering.log",
+                    rollingInterval: RollingInterval.Day,
+                    shared: true,
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}]<{ThreadId}>{SourceContext} {Message} {Properties} {NewLine}{ExceptionDetails}")
+                    .WriteTo.Console(LogEventLevel.Information, "{Timestamp:yyyy-MM-dd HH:mm:ss} {Message}")
+                    .CreateLogger();
+                
+                Log.Information("Program starting...");
                 ConfigController cfgController = new ConfigController();
                 tabConfigViewModel = new TabConfigViewModel(cfgController);
                 wateringDataService = new DataService();
@@ -69,7 +85,7 @@ namespace Watering2
 
         private void Desktop_Exit(object sender, ControlledApplicationLifetimeExitEventArgs e)
         {
-            ;
+            Log.CloseAndFlush();
         }
     }
 }
