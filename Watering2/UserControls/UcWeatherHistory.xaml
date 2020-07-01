@@ -35,7 +35,7 @@
               CanUserResizeColumns="True" >
       <DataGrid.Columns>
         <DataGridTextColumn
-          Header="Time"
+          Header="Messzeitpunkt"
           Binding="{Binding TimeStamp, Converter={StaticResource TimestampConverter}}"
           Width="2*" 
           />

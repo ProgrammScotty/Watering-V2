@@ -203,6 +203,8 @@ namespace Watering2.Services
             //statt 40 Grad nun eine Temperatur von 3° über dem Hitzelevel soll den CorrFactorHeat ergeben
             double maxSumForDeltaXDegrees = samplesAfternoon.Count * 3d;
             double corrHotNew = (tempAboveHotLevelAfternoon / maxSumForDeltaXDegrees) * _cfgCtrl.Configuration.CorrFactorHeat;
+            if (hotSamplesCntAfternoon == 0)
+                corrHotNew = 1;
 
             if (corrHotNew < 1d)
             {
@@ -215,9 +217,13 @@ namespace Watering2.Services
             double tempBelowColdLevelMonitoringHours = samples.Select(sample => _cfgCtrl.Configuration.LevelColdTemperature - sample.Temperature).Where(diff => diff > 0).Sum();
             maxSumForDeltaXDegrees = samplesCnt * 5d;
             double corrColdNew = (tempBelowColdLevelMonitoringHours / maxSumForDeltaXDegrees) * _cfgCtrl.Configuration.CorrFactorCold;
+            if (coldSamplesCntMonitoringHours == 0)
+                corrColdNew = 1;
 
             if (statistics)
                 return new WateringCorrection() { CorrFactorHot = stopWateringBecauseOfRain ? emergencyWatering ? 1 : 0 : corrHotNew, RainDuration = durationRain };
+
+
 
             var wateringData = new WateringData()
             {
@@ -238,8 +244,8 @@ namespace Watering2.Services
             _wateringDataService.SaveWateringData(wateringData);
             return new WateringCorrection()
             {
-                CorrFactorHot = (stopWateringBecauseOfRain ? emergencyWatering ? 1 : 0 : corrHotNew),
-                CorrFactorCold = stopWateringBecauseOfRain ? emergencyWatering ? 1 : 0 : corrColdNew,
+                CorrFactorHot = stopWateringBecauseOfRain ? (emergencyWatering ? 1 : 0) : corrHotNew,
+                CorrFactorCold = stopWateringBecauseOfRain ? (emergencyWatering ? 1 : 0) : corrColdNew,
                 RainDuration = durationRain
             };
         }
@@ -316,7 +322,7 @@ namespace Watering2.Services
         {
             WateringCorrection wateringCorrection = CalcWateringDurationCorrection(null);
             double correction;
-            if (wateringCorrection.CorrFactorHot == 0d || wateringCorrection.CorrFactorCold == 0d)
+            if (wateringCorrection.CorrFactorHot == 0d)
                 correction = 0;
             else if (wateringCorrection.CorrFactorHot > 1)
                 correction = wateringCorrection.CorrFactorHot;

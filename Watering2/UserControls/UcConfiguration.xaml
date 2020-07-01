@@ -15,7 +15,7 @@
   </UserControl.Resources>
 
   <StackPanel Width="720">
-    <Grid ColumnDefinitions="145,65,80,5,142,65,*" RowDefinitions="*,*,*,*,*,*,*,*,*,*,50,*,*">
+    <Grid ColumnDefinitions="160,65,80,5,150,65,*" RowDefinitions="*,*,*,*,*,*,*,*,*,*,50,*,*">
       <TextBlock Grid.Row="0" Grid.Column="0" Text="Abstand Messungen:" Margin="0,5,2,0" />
       <TextBox Grid.Row="0" Grid.Column="1" x:Name="measureDuration" Text="{Binding ConfigViewModel.MeasurementFrequency}" TextAlignment="Center"/>
       <TextBlock Grid.Row="0" Grid.Column="2" Text="sec"  Margin="2,5,2,0"/>
