@@ -34,10 +34,10 @@ namespace Watering2.ViewModels
 
             SelDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0); //AddDays(-1);
 
-            //CalcWateringTimeCmd = ReactiveCommand.CreateFromTask(async unit => { DoCalculateWateringTimeAndSecondWatering(); });
+            CalcWateringTimeCmd = ReactiveCommand.CreateFromTask(async unit => { DoCalculateWateringTimeAndSecondWatering(); });
         }
 
-        //public ReactiveCommand<Unit, Unit> CalcWateringTimeCmd { get; }
+        public ReactiveCommand<Unit, Unit> CalcWateringTimeCmd { get; }
 
         private List<Measurement> _readingPoints = new List<Measurement>();
         public List<Measurement> ReadingPoints
@@ -47,14 +47,14 @@ namespace Watering2.ViewModels
         }
 
 
-        private List<Point> _temperaturePlot = new List<Point>();
+        private List<Point> _temperaturePlot = new List<Point>() { new Point(0, 0), new Point(30, 30), new Point(60, -60) };
         public List<Point> TemperaturePlot
         {
             get => _temperaturePlot;
             set => this.RaiseAndSetIfChanged(ref _temperaturePlot, value);
         }
 
-        private List<Point> _humidityPlot = new List<Point>();
+        private List<Point> _humidityPlot = new List<Point>() { new Point(0, 60), new Point(30, 80), new Point(60, 50) };
         public List<Point> HumidityPlot
         {
             get => _humidityPlot;
@@ -322,7 +322,7 @@ namespace Watering2.ViewModels
             ReadingPoints = tempList;
 
             TemperaturePlot.Clear();
-            //TemperaturePlot = null;
+            TemperaturePlot = null;
             TemperaturePlot = tmpTemperaturePoints;
 
             HumidityPlot.Clear();

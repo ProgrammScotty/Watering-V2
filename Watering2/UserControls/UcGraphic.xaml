@@ -2,11 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:conv="clr-namespace:Watering2.ValueConverters"
-             xmlns:dd="clr-namespace:Watering2.ViewModels"
+             xmlns:vm="clr-namespace:Watering2.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Watering2.UserControls.UcGraphic"
-             d:DataContext="{x:Static dd:DesignViewModel.GraphicViewModel}">
+             d:DataContext="{x:Static vm:DesignViewModel.GraphicViewModel}"
+             >
+  
+  <!--<UserControl.DataContext>
+    <vm:TabGraphicViewModel/>
+  </UserControl.DataContext>-->
 
   <UserControl.Styles>
     <Style Selector="TextBlock">
@@ -22,21 +26,21 @@
     
     <Canvas Name="ReadingCanvas" Background="LightGray" Width="555" Height="270" Margin="0,0,0,0" HorizontalAlignment="Left">
       
-      <Polyline Name="TempLine"  Stroke="Red" Canvas.Left="0" Canvas.Top="132"/>
-      <!--
-      <Polyline Name="HumLine" Points="{Binding TabGraphicViewModel.HumidityPlot}" Stroke="Blue" Canvas.Left="0" Canvas.Top="265"/>
-      <Line Name="TempLimitLine" StartPoint="{Binding TabGraphicViewModel.HotLimitStartPoint}" EndPoint="{Binding TabGraphicViewModel.HotLimitEndPoint}" Stroke="LightSalmon" StrokeDashArray="4,2" IsVisible="{Binding TabGraphicViewModel.HotLimitLineVisible}" Canvas.Left="0" Canvas.Top="132"/>
-      <TextBlock Name="LimitValue" Text="{Binding TabGraphicViewModel.LevelHotValue}" FontSize="10" Canvas.Left="0" Canvas.Top="{Binding TabGraphicViewModel.HotLimitValuePos}" IsVisible="{Binding TabGraphicViewModel.HotLimitLineVisible}" />
-      <TextBlock Name="MinTempTbl" Text="{Binding TabGraphicViewModel.MinTempForPlot}" FontSize="10" Canvas.Left="0" Canvas.Top="125"/>
-      <TextBlock Name="MaxTempTbl" Text="{Binding TabGraphicViewModel.MaxTempForPlot}" FontSize="10" Canvas.Left="0" Canvas.Top="1"/>
-      <TextBlock Name="MinHumTbl" Text="{Binding TabGraphicViewModel.MinHumForPlot}" FontSize="10" Canvas.Left="0" Canvas.Top="258"/>
-      <TextBlock Name="MaxHumTbl" Text="{Binding TabGraphicViewModel.MaxHumForPlot}" FontSize="10" Canvas.Left="0" Canvas.Top="135"/>
-      <TextBlock Name="MinTimeTbl" Text="{Binding TabGraphicViewModel.MinTimeForPlot}" FontSize="10" Canvas.Left="0" Canvas.Top="113" TextAlignment="Left"/>
-      <TextBlock Name="MiddleTimeTbl" Text="{Binding TabGraphicViewModel.MiddleTimeForPlot}" FontSize="10" Canvas.Left="{Binding TabGraphicViewModel.MiddleTimePosForPlot}" TextAlignment="Center" Canvas.Top="113"/>
-      <TextBlock Name="MaxTimeTbl" Text="{Binding TabGraphicViewModel.MaxTimeForPlot}" FontSize="10" Canvas.Right="0" TextAlignment="Right" Canvas.Top="113"/>
-      <TextBlock Name="NoDataTbl" Text="Keine Daten vorhanden" FontSize="12" Canvas.Right="290" IsVisible="{Binding TabGraphicViewModel.NoDataForPlot}" HorizontalAlignment="Center" Canvas.Top="100" Foreground="Red" FontWeight="DemiBold"/>
-      <TextBlock Name="MaxTempTimeTbl" Text="{Binding TabGraphicViewModel.MaxTemperatTimeForPlot}" FontSize="10" Canvas.Left="{Binding TabGraphicViewModel.MaxTemperatPosForPlot}" Canvas.Top="50" TextAlignment="Center" Foreground="Red"/>
-   -->
+      <Polyline Name="TempLine" Points="{Binding GraphicViewModel.TemperaturePlot}" Stroke="Red" StrokeThickness="1" Canvas.Left="0" Canvas.Top="132"/>
+      <Polyline Name="HumLine" Points="{Binding GraphicViewModel.HumidityPlot}" Stroke="Blue" Canvas.Left="0" Canvas.Top="265"/>
+      
+      <Line Name="TempLimitLine" StartPoint="{Binding GraphicViewModel.HotLimitStartPoint}" EndPoint="{Binding GraphicViewModel.HotLimitEndPoint}" Stroke="LightSalmon" StrokeDashArray="4,2" IsVisible="{Binding GraphicViewModel.HotLimitLineVisible}" Canvas.Left="0" Canvas.Top="132"/>
+      <TextBlock Name="LimitValue" Text="{Binding GraphicViewModel.LevelHotValue}" FontSize="10" Canvas.Left="0" Canvas.Top="{Binding GraphicViewModel.HotLimitValuePos}" IsVisible="{Binding GraphicViewModel.HotLimitLineVisible}" />
+      <TextBlock Name="MinTempTbl" Text="{Binding GraphicViewModel.MinTempForPlot}" FontSize="10" Canvas.Left="0" Canvas.Top="125"/>
+      <TextBlock Name="MaxTempTbl" Text="{Binding GraphicViewModel.MaxTempForPlot}" FontSize="10" Canvas.Left="0" Canvas.Top="1"/>
+      <TextBlock Name="MinHumTbl" Text="{Binding GraphicViewModel.MinHumForPlot}" FontSize="10" Canvas.Left="0" Canvas.Top="258"/>
+      <TextBlock Name="MaxHumTbl" Text="{Binding GraphicViewModel.MaxHumForPlot}" FontSize="10" Canvas.Left="0" Canvas.Top="135"/>
+      <TextBlock Name="MinTimeTbl" Text="{Binding GraphicViewModel.MinTimeForPlot}" FontSize="10" Canvas.Left="0" Canvas.Top="113" TextAlignment="Left"/>
+      <TextBlock Name="MiddleTimeTbl" Text="{Binding GraphicViewModel.MiddleTimeForPlot}" FontSize="10" Canvas.Left="{Binding GraphicViewModel.MiddleTimePosForPlot}" TextAlignment="Center" Canvas.Top="113"/>
+      <TextBlock Name="MaxTimeTbl" Text="{Binding GraphicViewModel.MaxTimeForPlot}" FontSize="10" Canvas.Right="0" TextAlignment="Right" Canvas.Top="113"/>
+      <TextBlock Name="NoDataTbl" Text="Keine Daten vorhanden" FontSize="12" Canvas.Right="290" IsVisible="{Binding GraphicViewModel.NoDataForPlot}" HorizontalAlignment="Center" Canvas.Top="100" Foreground="Red" FontWeight="DemiBold"/>
+      <TextBlock Name="MaxTempTimeTbl" Text="{Binding GraphicViewModel.MaxTemperatTimeForPlot}" FontSize="10" Canvas.Left="{Binding GraphicViewModel.MaxTemperatPosForPlot}" Canvas.Top="50" TextAlignment="Center" Foreground="Red"/>
+   
    </Canvas>
     
     <Grid Margin="0,0,0,0">
@@ -52,18 +56,18 @@
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
       </Grid.RowDefinitions>
-      <DatePicker Grid.Row="0" Grid.Column="0" Name="DatePicker1" SelectedDateFormat="Custom" CustomDateFormatString="dd.MM.yyyy" FirstDayOfWeek="Monday" SelectedDate="{Binding TabGraphicViewModel.SelDate, Mode=TwoWay }" />
+      <DatePicker Grid.Row="0" Grid.Column="0" Name="DatePicker1" SelectedDateFormat="Custom" CustomDateFormatString="dd.MM.yyyy"  FirstDayOfWeek="Monday" SelectedDate="{Binding GraphicViewModel.SelDate, Mode=TwoWay }" />
       <TextBlock Grid.Row="0" Grid.Column="1" Text="Gießzeit:" Margin="5,5,0,0"/>
-      <TextBlock Grid.Row="0" Grid.Column="2" Name="calcWatDuration" Text="{Binding TabGraphicViewModel.CalculatedWateringDuration}"  Margin="5,5,0,0"/>
+      <TextBlock Grid.Row="0" Grid.Column="2" Name="calcWatDuration" Text="{Binding GraphicViewModel.CalculatedWateringDuration}"  Margin="5,5,0,0"/>
       <TextBlock Grid.Row="0" Grid.Column="3" Text="2. Gießen:" Margin="5,5,0,0"/>
-      <CheckBox Grid.Row="0" Grid.Column="4" IsChecked="{Binding TabGraphicViewModel.IsSecondWateringNecessary}" Margin="5,5,0,0"/>
+      <CheckBox Grid.Row="0" Grid.Column="4" IsChecked="{Binding GraphicViewModel.IsSecondWateringNecessary}" Margin="5,5,0,0"/>
 
       <TextBlock Grid.Row="1" Grid.Column="1" Text="Regen:" Margin="5,0,0,0"/>
-      <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding TabGraphicViewModel.RainDuration}" Margin="5,0,0,0"/>
+      <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding GraphicViewModel.RainDuration}" Margin="5,0,0,0"/>
       <TextBlock Grid.Row="1" Grid.Column="3" Text="Korr. Kälte:" Margin="5,0,0,0"/>
-      <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding TabGraphicViewModel.CorrCold}" Margin="5,0,0,0"/>
+      <TextBlock Grid.Row="1" Grid.Column="4" Text="{Binding GraphicViewModel.CorrCold}" Margin="5,0,0,0"/>
 
-      <Button Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Content="Berechnen" Command="{Binding TabGraphicViewModel.CalcWateringTimeCmd}"  Width="100" HorizontalAlignment="Left"/>
+      <Button Margin="0,10,0,0" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Content="Berechnen" Command="{Binding GraphicViewModel.CalcWateringTimeCmd}"  Width="100" HorizontalAlignment="Left"/>
     </Grid>
     <StackPanel Orientation="Horizontal" Spacing="5" Width="700">
     </StackPanel>

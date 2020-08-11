@@ -25,8 +25,8 @@ namespace Watering2.ViewModels
 
         public MainWindowViewModel()
         {
-            ConfigViewModel = null;
-            HistoryPumpViewModel = null;
+            //ConfigViewModel = null;
+            //HistoryPumpViewModel = null;
         }
 
         public MainWindowViewModel(TabStatusViewModel tabStatusViewModel, TabConfigViewModel tabConfigViewModel, TabHistoryPumpViewModel tabHistoryPumpViewModel, TabHistoryViewModel tabHistoryViewModel, TabGraphicViewModel tabGraphicViewModel,  Window topWindow)
