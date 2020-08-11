@@ -50,8 +50,8 @@ namespace Watering2
                     .WriteTo.File("Watering.log",
                     rollingInterval: RollingInterval.Day,
                     shared: true,
-                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}]<{ThreadId}>{SourceContext} {Message} {Properties} {NewLine}{ExceptionDetails}")
-                    .WriteTo.Console(LogEventLevel.Information, "{Timestamp:yyyy-MM-dd HH:mm:ss} {Message}")
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}]<{ThreadId}>{SourceContext} {Message} {Properties} {NewLine}{Exception}")
+                    .WriteTo.Console(LogEventLevel.Information, "{NewLine}{Timestamp:yyyy-MM-dd HH:mm:ss} {Message}{NewLine}{Exception}")
                     .CreateLogger();
                 
                 Log.Information("Program starting...");

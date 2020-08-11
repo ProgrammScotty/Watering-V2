@@ -16,5 +16,6 @@ namespace Watering2.Models
         public double Pressure { get; set; }
         public bool Raining { get; set; }
         public double DewPoint { get; set; }
+        public bool RainCorrected { get; set; }
     }
 }

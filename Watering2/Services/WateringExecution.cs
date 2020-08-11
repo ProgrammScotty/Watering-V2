@@ -32,7 +32,7 @@ namespace Watering2.Services
         private ILogger _logger;
 
         //MainCycle: Morning, Secondary: Evening
-        private enum WateringEvent { None, SecondaryCycle, MainCycle }
+        private enum WateringEvent { None, SecondaryCycle, PrimaryCycle }
 
         private WateringEvent _wateringEvent = WateringEvent.None;
 
@@ -168,7 +168,7 @@ namespace Watering2.Services
             int cntRain = samplesForRain.Count(p => p.Raining);
             int durationRain = cntRain * _cfgCtrl.Configuration.MeasurementFrequency;
 
-            int stopDuration = _cfgCtrl.Configuration.RainDurationToStopWatering.Hours * 60 * 60 + 
+            int stopDuration = _cfgCtrl.Configuration.RainDurationToStopWatering.Hours * 60 * 60 +
                                _cfgCtrl.Configuration.RainDurationToStopWatering.Minutes * 60 +
                                _cfgCtrl.Configuration.RainDurationToStopWatering.Seconds;
 
@@ -339,8 +339,10 @@ namespace Watering2.Services
                 return;
             }
 
+            _logger.Information("Start primary watering, duration: {Duration}, correction: {Correction}", duration, correction);
+
             _pumpsActive = true;
-            _wateringEvent = WateringEvent.SecondaryCycle;
+            _wateringEvent = WateringEvent.PrimaryCycle;
 
             if (!_debugMode)
             {
@@ -380,7 +382,7 @@ namespace Watering2.Services
             }
 
             _pumpsActive = true;
-            _wateringEvent = WateringEvent.MainCycle;
+            _wateringEvent = WateringEvent.SecondaryCycle;
             int duration = Convert.ToInt32(_cfgCtrl.Configuration.PumpDurationSecondCycle * 1000);
             if (!_debugMode)
             {
@@ -411,12 +413,12 @@ namespace Watering2.Services
         {
             if (_pumpsActive)
             {
-                if (_wateringEvent == WateringEvent.SecondaryCycle)
+                if (_wateringEvent == WateringEvent.PrimaryCycle)
                 {
                     TimeToWatering = "Es wird gegossen";
                     OnPropertyChanged(nameof(TimeToWatering));
                 }
-                else if (_wateringEvent == WateringEvent.MainCycle)
+                else if (_wateringEvent == WateringEvent.SecondaryCycle)
                 {
                     TimeToWatering2 = "Es wird gegossen";
                     OnPropertyChanged(nameof(TimeToWatering2));

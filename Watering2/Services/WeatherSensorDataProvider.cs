@@ -72,21 +72,26 @@ namespace Watering2.Services
 
         private void SensorConnector_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != "Reading done") return;
-
-            var readingPoint = _sensorConnector.GetLastReadingPoint();
-
-            lock (_lockObject)
+            if (e.PropertyName == "Reading Error")
             {
-                if (_lastReadingPoints.Count >= MaxNumLastReadingPoints)
-                    _lastReadingPoints.RemoveAt(MaxNumLastReadingPoints - 1);
-                _lastReadingPoints.Insert(0, readingPoint);
+                PropertyChanged?.Invoke(null, new PropertyChangedEventArgs("ReadingFailure"));
             }
+            else if (e.PropertyName == "Reading done")
+            {
+                var readingPoint = _sensorConnector.GetLastReadingPoint();
 
-            if (_sensorConnector != null && !_sensorConnector.IsInDiagnosticMode)
-                _dataService.SaveReadingPoint(readingPoint);
+                lock (_lockObject)
+                {
+                    if (_lastReadingPoints.Count >= MaxNumLastReadingPoints)
+                        _lastReadingPoints.RemoveAt(MaxNumLastReadingPoints - 1);
+                    _lastReadingPoints.Insert(0, readingPoint);
+                }
 
-            PropertyChanged?.Invoke(null, new PropertyChangedEventArgs("LastReadingPoints"));
+                if (_sensorConnector != null && !_sensorConnector.IsInDiagnosticMode)
+                    _dataService.SaveReadingPoint(readingPoint);
+
+                PropertyChanged?.Invoke(null, new PropertyChangedEventArgs("LastReadingPoints"));
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

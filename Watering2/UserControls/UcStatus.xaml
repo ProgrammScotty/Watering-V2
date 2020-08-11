@@ -49,6 +49,7 @@
     <StackPanel Orientation="Horizontal" Margin="5,30,5,0">
       <TextBlock Text="Diagnosemodus des Sensors: " Width="210"/>
       <CheckBox IsChecked="{Binding Path=StatusViewModel.DiagnosticModeActive, Mode=TwoWay}"  />
+      <TextBlock Margin="15,0,0,0" Text="Sensor Lesefehler" Foreground="Red" IsVisible="{Binding Path=StatusViewModel.SensorReadingError}" />
     </StackPanel>
     <StackPanel Orientation="Horizontal" Margin="5,2,5,0" Height="40">
       <TextBlock Text="Pumpen manuell steuern: " Width="210" Margin="0,10,0,0"/>

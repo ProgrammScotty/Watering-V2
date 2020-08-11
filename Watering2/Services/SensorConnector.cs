@@ -8,6 +8,7 @@ using System.Threading;
 using JetBrains.Annotations;
 using Watering2.Configuration;
 using Bmxx80;
+using Serilog;
 using UnitsNet;
 using Watering2.Models;
 
@@ -24,9 +25,11 @@ namespace Watering2.Services
         private int _readingInterval;
         private Measurement _lastReadingPoint;
         private Timer _mainTimer;
+        private const double _maxTemperatureForRain = 35d;
         private bool _diagnosticMode;
         private int _diagnosticReadingInterval = 6000;
         private Random _random = new Random(1);
+        private ILogger _logger;
 
 
         public Measurement GetLastReadingPoint() => _lastReadingPoint;
@@ -34,6 +37,7 @@ namespace Watering2.Services
         
         public SensorConnector(ConfigController cfgController, bool debugMode)
         {
+            _logger = Log.ForContext<SensorConnector>();
             _cfgCtrl = cfgController;
             _debugMode = debugMode;
 
@@ -99,13 +103,20 @@ namespace Watering2.Services
             var i2cDevice = I2cDevice.Create(i2cSettings);
             _bme280 = new Bme280(i2cDevice);
 
-            // set higher sampling
-            _bme280.TemperatureSampling = Sampling.LowPower;
-            _bme280.PressureSampling = Sampling.UltraHighResolution;
-            _bme280.HumiditySampling = Sampling.Standard;
+            try
+            {
+                // set higher sampling
+                _bme280.TemperatureSampling = Sampling.LowPower;
+                _bme280.PressureSampling = Sampling.UltraHighResolution;
+                _bme280.HumiditySampling = Sampling.Standard;
 
-            // set mode forced so device sleeps after read
-            _bme280.SetPowerMode(Bmx280PowerMode.Forced);
+                // set mode forced so device sleeps after read
+                _bme280.SetPowerMode(Bmx280PowerMode.Forced);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error creating the sensor");
+            }
         }
 
 
@@ -116,29 +127,50 @@ namespace Watering2.Services
                 return;
             }
 
+            var readingOK = true;
+
             if (!_debugMode)
             {
-                // set mode forced and read again
-                _bme280.SetPowerMode(Bmx280PowerMode.Forced);
-
-                // wait for measurement to be performed
-                var measurementTime = _bme280.GetMeasurementDuration();
-                Thread.Sleep(measurementTime);
-
-                // read values
-                _bme280.TryReadTemperature(out var tempValue);
-                _bme280.TryReadPressure(out var preValue);
-                _bme280.TryReadHumidity(out var humValue);
-
-                _lastReadingPoint = new Measurement()
+                try
                 {
-                    TimeStamp = DateTime.Now,
-                    Temperature = tempValue.DegreesCelsius,
-                    Pressure = preValue.Hectopascals,
-                    Humidity = humValue.Percent,
-                    DewPoint = WeatherHelper.CalculateDewPoint(tempValue, humValue).DegreesCelsius,
-                    Raining = DigitalIOConnector.Instance.ReadRainSensorDetectsRain()
-                };
+                    // set mode forced and read again
+                    _bme280.SetPowerMode(Bmx280PowerMode.Forced);
+
+                    // wait for measurement to be performed
+                    var measurementTime = _bme280.GetMeasurementDuration();
+                    Thread.Sleep(measurementTime);
+
+                    // read values
+                    _bme280.TryReadTemperature(out var tempValue);
+                    _bme280.TryReadPressure(out var preValue);
+                    _bme280.TryReadHumidity(out var humValue);
+
+                    var itsRaining = DigitalIOConnector.Instance.ReadRainSensorDetectsRain();
+                    var rainCorrected = false;
+                    if (itsRaining && tempValue.DegreesCelsius >= _maxTemperatureForRain)
+                    {
+                        itsRaining = false;
+                        rainCorrected = true;
+                        _logger.Information("Raining sensor corrected ({Temp}° greater than {MaxTempRain}°)", tempValue.DegreesCelsius, _maxTemperatureForRain);
+                    }
+
+                    _lastReadingPoint = new Measurement()
+                    {
+                        TimeStamp = DateTime.Now,
+                        Temperature = tempValue.DegreesCelsius,
+                        Pressure = preValue.Hectopascals,
+                        Humidity = humValue.Percent,
+                        DewPoint = WeatherHelper.CalculateDewPoint(tempValue, humValue).DegreesCelsius,
+                        Raining = itsRaining,
+                        RainCorrected = rainCorrected
+                    };
+                }
+                catch (Exception ex)
+                {
+                    readingOK = false;
+                    _lastReadingPoint = null;
+                    _logger.Error(ex, "Error while reading");
+                }
             }
             else
             {
@@ -153,7 +185,7 @@ namespace Watering2.Services
                 };
             }
 
-            OnPropertyChanged("Reading done");
+            OnPropertyChanged(readingOK ? "Reading done" : "Reading Error");
         }
 
         private void CfgCtrl_PropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -94,7 +94,12 @@ namespace Watering2.ViewModels
             get => _sensorDataProvider.DiagnosticModeActive;
             set => _sensorDataProvider.DiagnosticModeActive = value;
         }
-
+        private bool _sensorReadingError = false;
+        public bool SensorReadingError
+        {
+            get => _sensorReadingError;
+            set => this.RaiseAndSetIfChanged(ref _sensorReadingError, value);
+        }
 
         private void DigitalIOConnector_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -103,10 +108,17 @@ namespace Watering2.ViewModels
 
         private void SensorDataProvider_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != "LastReadingPoints") return;
+            if (e.PropertyName == "LastReadingPoints")
+            {
+                LastReadingPoints.Clear();
+                LastReadingPoints.InsertRange(_sensorDataProvider.LastReadingPoints);
+                SensorReadingError = false;
+            }
+            else if (e.PropertyName == "ReadingFailure")
+            {
+                SensorReadingError = true;
+            }
 
-            LastReadingPoints.Clear();
-            LastReadingPoints.InsertRange(_sensorDataProvider.LastReadingPoints);
         }
 
         private void WateringExecution_PropertyChanged(object sender, PropertyChangedEventArgs e)
