@@ -30,7 +30,7 @@ namespace Watering2
             TabStatusViewModel statusViewModel = null;
             TabHistoryPumpViewModel historyPumpViewModel = null;
             TabHistoryViewModel historyViewModel = null;
-            //TabHistoryPumpViewModel pumpHistoryViewModel = null;
+            TabGraphicViewModel graphicViewModel = null;
             DataService wateringDataService = null;
             WateringExecution wateringExecution;
             WeatherSensorDataProvider sensorDataProvider;
@@ -63,6 +63,7 @@ namespace Watering2
                 statusViewModel = new TabStatusViewModel(cfgController, sensorDataProvider, wateringExecution, debug);
                 historyPumpViewModel = new TabHistoryPumpViewModel(wateringDataService);
                 historyViewModel = new TabHistoryViewModel(wateringDataService);
+                graphicViewModel = new TabGraphicViewModel(cfgController, wateringDataService, wateringExecution);
             }
 
 
@@ -73,7 +74,7 @@ namespace Watering2
                 desktop = lifetime;
                 desktop.MainWindow = new MainWindow();
                 desktop.MainWindow.DataContext = tabConfigViewModel == null ? new MainWindowViewModel() 
-                    : new MainWindowViewModel(statusViewModel, tabConfigViewModel, historyPumpViewModel, historyViewModel, desktop.MainWindow);
+                    : new MainWindowViewModel(statusViewModel, tabConfigViewModel, historyPumpViewModel, historyViewModel, graphicViewModel, desktop.MainWindow);
             }
 
             

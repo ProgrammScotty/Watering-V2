@@ -51,8 +51,8 @@
       <TabItem Header="Bewässerung" Name="TabHistoryPump">
          <uc:UcHistoryPump Margin="10,10,0,0"/>
       </TabItem>
-      <TabItem Header="Statistik" Name="TabStatistics" Margin="0,0,0,0" HorizontalAlignment="Left" HorizontalContentAlignment="Left">
-
+      <TabItem Header="Optimierung" Name="TabGraphic" Margin="0,0,0,0" HorizontalAlignment="Left" HorizontalContentAlignment="Left">
+        <uc:UcGraphic Margin="10,10,0,0"/>
       </TabItem>
     </TabControl>
   </StackPanel>

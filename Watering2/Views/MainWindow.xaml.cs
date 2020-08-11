@@ -38,7 +38,7 @@ namespace Watering2.Views
 
             _historyTabItem = this.FindControl<TabItem>("TabHistoryReadings");
             _pumpHistoryTabItem = this.FindControl<TabItem>("TabHistoryPump");
-            _statisticsTabItem = this.FindControl<TabItem>("TabStatistics");
+            _statisticsTabItem = this.FindControl<TabItem>("TabGraphic");
 
             _mainTabCtrl.SelectionChanged += MainTabCtrl_SelectionChanged;
         }
@@ -49,8 +49,8 @@ namespace Watering2.Views
                 _viewModelMainWnd.HistoryViewModel.UpdateReadingHistory();
             if (_pumpHistoryTabItem != null && _pumpHistoryTabItem.IsSelected)
                 _viewModelMainWnd.HistoryPumpViewModel.UpdatePumpHistory();
-            //else if (_statisticsTabItem != null && _statisticsTabItem.IsSelected)
-            //    _viewModelMainWnd.StatisticsViewModel.UpdateReadings();
+            else if (_statisticsTabItem != null && _statisticsTabItem.IsSelected)
+                _viewModelMainWnd.GraphicViewModel.UpdateReadings();
         }
 
         private void MainWindow_Opened(object sender, System.EventArgs e)

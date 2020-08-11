@@ -20,12 +20,14 @@
     <AvaloniaResource Remove="UserControls\UcHistoryPump.xaml" />
     <AvaloniaResource Remove="UserControls\UcStatus.xaml" />
     <AvaloniaResource Remove="UserControls\UcWeatherHistory.xaml" />
+    <AvaloniaResource Remove="UserControls\UcGraphic.xaml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="UserControls\UcConfiguration.xaml" />
     <None Remove="UserControls\UcHistoryPump.xaml" />
     <None Remove="UserControls\UcStatus.xaml" />
     <None Remove="UserControls\UcWeatherHistory.xaml" />
+    <None Remove="UserControls\UcGraphic.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,6 +61,9 @@
     <EmbeddedResource Include="UserControls\UcConfiguration.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\UcGraphic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="UserControls\UcStatus.xaml">
@@ -80,5 +85,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bmxx80\Bmxx80.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="UserControls\UcGraphic.xaml.cs">
+      <DependentUpon>UcGraphic.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>
