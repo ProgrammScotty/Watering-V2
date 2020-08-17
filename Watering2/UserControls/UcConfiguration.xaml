@@ -15,7 +15,7 @@
   </UserControl.Resources>
 
   <StackPanel Width="720">
-    <Grid ColumnDefinitions="160,65,80,5,150,65,*" RowDefinitions="*,*,*,*,*,*,*,*,*,*,50,*,*">
+    <Grid ColumnDefinitions="160,65,80,5,150,65,*" RowDefinitions="*,*,*,*,*,*,*,*,*,*,*,50,*,*">
       <TextBlock Grid.Row="0" Grid.Column="0" Text="Abstand Messungen:" Margin="0,5,2,0" />
       <TextBox Grid.Row="0" Grid.Column="1" x:Name="measureDuration" Text="{Binding ConfigViewModel.MeasurementFrequency}" TextAlignment="Center"/>
       <TextBlock Grid.Row="0" Grid.Column="2" Text="sec"  Margin="2,5,2,0"/>
@@ -60,20 +60,24 @@
       <TextBox Grid.Row="6" Grid.Column="5" x:Name="pumpDuration2" Text="{Binding Path=ConfigViewModel.PumpDurationSecondCycle, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
       <TextBlock Grid.Row="6" Grid.Column="6" Text="sec"  Margin="2,5,2,0"/>
 
-      <TextBlock Grid.Row="7" Grid.Column="0" Text="Max. Dauer Regen:" Margin="0,5,2,0"/>
-      <TextBox Grid.Row="7" Grid.Column="1" x:Name="durationRain" Text="{Binding Path=ConfigViewModel.RainDurationToStopWatering, Mode=TwoWay, Converter={StaticResource TimeSpanConverter}}" TextAlignment="Center" Margin="0,2,0,0"/>
-      <TextBlock Grid.Row="7" Grid.Column="2" Text="h:m:s" Margin="2,5,2,0"/>
-      <TextBlock Grid.Row="7" Grid.Column="4" Text="Max Zeit ohne Bew"  Margin="0,5,2,0"/>
-      <TextBox Grid.Row="7" Grid.Column="5" x:Name="maxDaysWithoutWatering" Text="{Binding Path=ConfigViewModel.MaxDaysWithoutWatering, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
-      <TextBlock Grid.Row="7" Grid.Column="6" Text="Tage"  Margin="2,5,2,0"/>
+      <TextBlock Grid.Row="7" Grid.Column="0" Text="Maximale Gießzeit:" Margin="0,5,2,0"/>
+      <TextBox Grid.Row="7" Grid.Column="1" x:Name="maxDuration" Text="{Binding Path=ConfigViewModel.MaxPumpDurationMainCycle, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
+      <TextBlock Grid.Row="7" Grid.Column="2" Text="sec"  Margin="2,5,2,0"/>
 
-      <TextBlock Grid.Row="8" Grid.Column="0" Text="2. Gießen aktiv:" Margin="0,5,2,0"/>
-      <CheckBox Grid.Row="8" Grid.Column="1" IsChecked="{Binding ConfigViewModel.SecondWateringActive}" />
+      <TextBlock Grid.Row="8" Grid.Column="0" Text="Max. Dauer Regen:" Margin="0,5,2,0"/>
+      <TextBox Grid.Row="8" Grid.Column="1" x:Name="durationRain" Text="{Binding Path=ConfigViewModel.RainDurationToStopWatering, Mode=TwoWay, Converter={StaticResource TimeSpanConverter}}" TextAlignment="Center" Margin="0,2,0,0"/>
+      <TextBlock Grid.Row="8" Grid.Column="2" Text="h:m:s" Margin="2,5,2,0"/>
+      <TextBlock Grid.Row="8" Grid.Column="4" Text="Max Zeit ohne Bew"  Margin="0,5,2,0"/>
+      <TextBox Grid.Row="8" Grid.Column="5" x:Name="maxDaysWithoutWatering" Text="{Binding Path=ConfigViewModel.MaxDaysWithoutWatering, Mode=TwoWay}" TextAlignment="Center" Margin="0,2,0,0"/>
+      <TextBlock Grid.Row="8" Grid.Column="6" Text="Tage"  Margin="2,5,2,0"/>
 
-      <TextBlock Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="7" Text="{Binding ConfigViewModel.ValidationErrorText}" Margin="0,5,0,5"/>
+      <TextBlock Grid.Row="9" Grid.Column="0" Text="2. Gießen aktiv:" Margin="0,5,2,0"/>
+      <CheckBox Grid.Row="9" Grid.Column="1" IsChecked="{Binding ConfigViewModel.SecondWateringActive}" />
 
-      <Button Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="2" Content="Speichern" Command="{Binding ConfigViewModel.SaveConfigurationCmd}" Width="200" HorizontalAlignment="Center"/>
-      <Button Grid.Row="11" Grid.Column="4" Grid.ColumnSpan="2" Content="Änderungen verwerfen" Command="{Binding ConfigViewModel.RestoreConfigurationCmd}" Width="200" HorizontalAlignment="Center"/>
+      <TextBlock Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="7" Text="{Binding ConfigViewModel.ValidationErrorText}" Margin="0,5,0,5"/>
+
+      <Button Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Content="Speichern" Command="{Binding ConfigViewModel.SaveConfigurationCmd}" Width="200" HorizontalAlignment="Center"/>
+      <Button Grid.Row="12" Grid.Column="4" Grid.ColumnSpan="2" Content="Änderungen verwerfen" Command="{Binding ConfigViewModel.RestoreConfigurationCmd}" Width="200" HorizontalAlignment="Center"/>
     </Grid>
   </StackPanel>
   

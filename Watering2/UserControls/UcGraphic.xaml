@@ -22,12 +22,12 @@
     </Style>
   </UserControl.Styles>
 
-  <StackPanel Orientation="Vertical" Spacing="15" Margin="0,0,0,0" HorizontalAlignment="Left" Width="558">
+  <StackPanel Orientation="Vertical" Spacing="15" Margin="0,0,0,0" HorizontalAlignment="Left" Width="720">
     
-    <Canvas Name="ReadingCanvas" Background="LightGray" Width="555" Height="270" Margin="0,0,0,0" HorizontalAlignment="Left">
-      
-      <Polyline Name="TempLine" Points="{Binding GraphicViewModel.TemperaturePlot}" Stroke="Red" StrokeThickness="1" Canvas.Left="0" Canvas.Top="132"/>
-      <Polyline Name="HumLine" Points="{Binding GraphicViewModel.HumidityPlot}" Stroke="Blue" Canvas.Left="0" Canvas.Top="265"/>
+    <Canvas Name="ReadingCanvas" Background="LightGray" Width="800" Height="270" Margin="0,0,0,0" HorizontalAlignment="Left">
+      <!-- zum ansehen des Rests: auskommentieren-->
+      <Polyline Name="TempLine" Points="{Binding GraphicViewModel.TemperaturePlot}" Stroke="Red" StrokeThickness="1" Canvas.Left="0" Canvas.Top="134"/>
+      <Polyline Name="HumLine" Points="{Binding GraphicViewModel.HumidityPlot}" Stroke="Blue" Canvas.Left="0" Canvas.Top="269"/>
       
       <Line Name="TempLimitLine" StartPoint="{Binding GraphicViewModel.HotLimitStartPoint}" EndPoint="{Binding GraphicViewModel.HotLimitEndPoint}" Stroke="LightSalmon" StrokeDashArray="4,2" IsVisible="{Binding GraphicViewModel.HotLimitLineVisible}" Canvas.Left="0" Canvas.Top="132"/>
       <TextBlock Name="LimitValue" Text="{Binding GraphicViewModel.LevelHotValue}" FontSize="10" Canvas.Left="0" Canvas.Top="{Binding GraphicViewModel.HotLimitValuePos}" IsVisible="{Binding GraphicViewModel.HotLimitLineVisible}" />
@@ -36,12 +36,14 @@
       <TextBlock Name="MinHumTbl" Text="{Binding GraphicViewModel.MinHumForPlot}" FontSize="10" Canvas.Left="0" Canvas.Top="258"/>
       <TextBlock Name="MaxHumTbl" Text="{Binding GraphicViewModel.MaxHumForPlot}" FontSize="10" Canvas.Left="0" Canvas.Top="135"/>
       <TextBlock Name="MinTimeTbl" Text="{Binding GraphicViewModel.MinTimeForPlot}" FontSize="10" Canvas.Left="0" Canvas.Top="113" TextAlignment="Left"/>
-      <TextBlock Name="MiddleTimeTbl" Text="{Binding GraphicViewModel.MiddleTimeForPlot}" FontSize="10" Canvas.Left="{Binding GraphicViewModel.MiddleTimePosForPlot}" TextAlignment="Center" Canvas.Top="113"/>
-      <TextBlock Name="MaxTimeTbl" Text="{Binding GraphicViewModel.MaxTimeForPlot}" FontSize="10" Canvas.Right="0" TextAlignment="Right" Canvas.Top="113"/>
+      <TextBlock Name="MiddleTimeTbl" Text="{Binding GraphicViewModel.MiddleTimeForPlot}" FontSize="10" Canvas.Left="{Binding GraphicViewModel.MiddleTimePosForPlot}" Canvas.Top="113" Margin="-14,0,0,0"/>
+      <TextBlock Name="MaxTimeTbl" Text="{Binding GraphicViewModel.MaxTimeForPlot}" FontSize="10" Canvas.Right="82" Canvas.Top="113"/>
       <TextBlock Name="NoDataTbl" Text="Keine Daten vorhanden" FontSize="12" Canvas.Right="290" IsVisible="{Binding GraphicViewModel.NoDataForPlot}" HorizontalAlignment="Center" Canvas.Top="100" Foreground="Red" FontWeight="DemiBold"/>
-      <TextBlock Name="MaxTempTimeTbl" Text="{Binding GraphicViewModel.MaxTemperatTimeForPlot}" FontSize="10" Canvas.Left="{Binding GraphicViewModel.MaxTemperatPosForPlot}" Canvas.Top="50" TextAlignment="Center" Foreground="Red"/>
-   
-   </Canvas>
+      <TextBlock Name="MaxTempTimeTbl" Text="{Binding GraphicViewModel.MaxTemperatTimeForPlot}" FontSize="10" Canvas.Left="{Binding GraphicViewModel.MaxTemperatPosForPlot}" Canvas.Top="50" Foreground="Red" Margin="-14,0,0,0"/>
+      <TextBlock Name="MinTempTimeTbl" Text="{Binding GraphicViewModel.MinTemperatTimeForPlot}" FontSize="10" Canvas.Left="{Binding GraphicViewModel.MinTemperatPosForPlot}" Canvas.Top="50" Foreground="Red" Margin="-14,0,0,0"/>
+      <TextBlock Name="MaxHumTimeTbl" Text="{Binding GraphicViewModel.MaxHumidityTimeForPlot}" FontSize="10" Canvas.Left="{Binding GraphicViewModel.MaxHumidityPosForPlot}" Canvas.Top="185" Foreground="Blue" Margin="-14,0,0,0"/>
+
+    </Canvas>
     
     <Grid Margin="0,0,0,0">
       <Grid.ColumnDefinitions>

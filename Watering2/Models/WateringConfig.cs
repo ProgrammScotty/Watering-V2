@@ -50,6 +50,14 @@ namespace Watering2.Models
             set { this["PumpDurationMainCycle"] = value; OnPropertyChanged(nameof(PumpDurationMainCycle));}
         }
 
+        [ConfigurationProperty("MaxPumpDurationMainCycle", DefaultValue = 500, IsRequired = true)]
+        [IntegerValidator(MinValue = 0, MaxValue = 500, ExcludeRange = false)]
+        public int MaxPumpDurationMainCycle
+        {
+            get => (int)this["MaxPumpDurationMainCycle"];
+            set { this["MaxPumpDurationMainCycle"] = value; OnPropertyChanged(nameof(PumpDurationMainCycle)); }
+        }
+
         [ConfigurationProperty("PumpDurationSecondCycle", DefaultValue = 60, IsRequired = true)]
         [IntegerValidator(MinValue = 0, MaxValue = 500, ExcludeRange = false)]
         public int PumpDurationSecondCycle

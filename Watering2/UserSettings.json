@@ -5,6 +5,7 @@
     "LevelHeatTemperature": "25",
     "LevelColdTemperature": "15",
     "PumpDurationMainCycle": "90",
+    "MaxPumpDurationMainCycle": "240",
     "PumpDurationSecondCycle": "60",
     "MaxRainDuration": "100",
     "StartWateringMainCycle": "0.06:00:00.0000",

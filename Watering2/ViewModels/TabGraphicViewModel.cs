@@ -19,7 +19,8 @@ namespace Watering2.ViewModels
         private WateringExecution _wateringTimers;
         private ConfigController _cfgController;
 
-        const int _canWidth = 558;
+        const int _canvasWidth = 800;
+        private const double _canvasHeight = 270;
 
         public TabGraphicViewModel()
         {
@@ -111,6 +112,27 @@ namespace Watering2.ViewModels
             set => this.RaiseAndSetIfChanged(ref _maxTemperatPosForPlot, value);
         }
 
+        private string _minTemperatPosForPlot = "200";
+        public string MinTemperatPosForPlot
+        {
+            get => _minTemperatPosForPlot;
+            set => this.RaiseAndSetIfChanged(ref _minTemperatPosForPlot, value);
+        }
+
+        private string _maxHumidityPosForPlot = "200";
+        public string MaxHumidityPosForPlot
+        {
+            get => _maxHumidityPosForPlot;
+            set => this.RaiseAndSetIfChanged(ref _maxHumidityPosForPlot, value);
+        }
+
+        private string _maxHumidityTimeForPlot = "04:00";
+        public string MaxHumidityTimeForPlot
+        {
+            get => _maxHumidityTimeForPlot;
+            set => this.RaiseAndSetIfChanged(ref _maxHumidityTimeForPlot, value);
+        }
+
         private string _maxTimeForPlot = "23:59:59";
         public string MaxTimeForPlot
         {
@@ -125,7 +147,14 @@ namespace Watering2.ViewModels
             set => this.RaiseAndSetIfChanged(ref _maxTemperatTimeForPlot, value);
         }
 
-        private string _middleTimePosForPlot = "275";
+        private string _minTemperatTimeForPlot = "08:00:00";
+        public string MinTemperatTimeForPlot
+        {
+            get => _minTemperatTimeForPlot;
+            set => this.RaiseAndSetIfChanged(ref _minTemperatTimeForPlot, value);
+        }
+
+        private string _middleTimePosForPlot = (_canvasWidth/2).ToString();
         public string MiddleTimePosForPlot
         {
             get => _middleTimePosForPlot;
@@ -186,7 +215,7 @@ namespace Watering2.ViewModels
             set => this.RaiseAndSetIfChanged(ref _hotLimitStartPoint, value);
         }
 
-        private Point _hotLimitEndPoint = new Point(_canWidth, 0);
+        private Point _hotLimitEndPoint = new Point(_canvasWidth, 0);
         public Point HotLimitEndPoint
         {
             get => _hotLimitEndPoint;
@@ -233,7 +262,7 @@ namespace Watering2.ViewModels
             double minHum = tempList.Min(x => x.Humidity);
 
             double tempRange = maxTemperat - minTemperat;
-            double tempScaleFactor = -130d / (tempRange > 0 ? tempRange : 1); // Canvas.Top
+            double tempScaleFactor = -((_canvasHeight-2)/2) / (tempRange > 0 ? tempRange : 1); // Canvas.Top
 
             double levelHot = _cfgController.Configuration.LevelHeatTemperature;
 
@@ -241,8 +270,8 @@ namespace Watering2.ViewModels
             {
                 HotLimitLineVisible = true;
                 HotLimitStartPoint = new Point(0, (levelHot - minTemperat) * tempScaleFactor);
-                HotLimitEndPoint = new Point(_canWidth, HotLimitStartPoint.Y);
-                HotLimitValuePos = ((int)(132d + HotLimitStartPoint.Y)).ToString(); //132: Nullpunkt der Temperaturkurve
+                HotLimitEndPoint = new Point(_canvasWidth, HotLimitStartPoint.Y);
+                HotLimitValuePos = ((int)(134d + HotLimitStartPoint.Y)).ToString(); //134: Nullpunkt der Temperaturkurve aus xaml file
                 LevelHotValue = $"{levelHot:##} °";
             }
             else
@@ -253,7 +282,7 @@ namespace Watering2.ViewModels
             //(readingPt.Temperature - minTemperat) * tempScaleFactor)
 
             double humRange = maxHum - minHum;
-            double humScaleFactor = -130d / (humRange > 0 ? humRange : 1);
+            double humScaleFactor = -((_canvasHeight-2)/2) / (humRange > 0 ? humRange : 1);
 
             int cntReadings = tempList.Count;
 
@@ -261,20 +290,19 @@ namespace Watering2.ViewModels
             double pixPerReading = 1;
 
 
-            if (_canWidth < cntReadings)
+            if (_canvasWidth < cntReadings)
             {
-                toSkip = cntReadings / (int)_canWidth;
+                toSkip = cntReadings / (int)_canvasWidth;
             }
             else
             {
-                pixPerReading = (double)_canWidth / (cntReadings > 1 ? cntReadings - 1 : cntReadings);
+                pixPerReading = (double)_canvasWidth / (cntReadings > 1 ? cntReadings : cntReadings);
             }
 
 
-            TimeSpan middleTime = (tempList[cntReadings - 1].TimeStamp - tempList[0].TimeStamp) / 2;
-            middleTime = middleTime.Add(new TimeSpan(tempList[0].TimeStamp.Hour, tempList[0].TimeStamp.Minute, tempList[0].TimeStamp.Second));
-            int middleIntTime = middleTime.Seconds + middleTime.Minutes * 100 +
-                             middleTime.Hours * 10000;
+            TimeSpan timeRange = (tempList[cntReadings - 1].TimeStamp - tempList[0].TimeStamp) / 2;
+            TimeSpan middleTime = timeRange.Add(new TimeSpan(tempList[0].TimeStamp.Hour, tempList[0].TimeStamp.Minute, tempList[0].TimeStamp.Second));
+            int middleIntTime = middleTime.Seconds + middleTime.Minutes * 100 + middleTime.Hours * 10000;
 
             List<Point> tmpTemperaturePoints = new List<Point>();
             List<Point> tmpHumidityPoints = new List<Point>();
@@ -282,21 +310,34 @@ namespace Watering2.ViewModels
             double actColumn = 0;
             var skippedItems = 0;
             double posMaxTemperat = 0;
+            double posMinTemperat = 0;
+            double posMaxHumidity = 0;
             DateTime maxTemperatTime = startTime;
+            DateTime minTemperatTime = startTime;
+            DateTime maxHumidityTime = startTime;
             var minDiffToMiddleTime = Int32.MaxValue;
             double posMiddleTime = 0;
             string strgMiddleTime = String.Empty;
 
             foreach (Measurement readingPt in tempList)
             {
-                if (Math.Abs(readingPt.Temperature - maxTemperat) <= 0.1f)
+                if (Math.Abs(readingPt.Temperature - maxTemperat) <= 0.15d)
                 {
                     posMaxTemperat = pixPerReading * actColumn;
                     maxTemperatTime = readingPt.TimeStamp;
                 }
+                if (Math.Abs(readingPt.Temperature - minTemperat) <= 0.15d)
+                {
+                    posMinTemperat = pixPerReading * actColumn;
+                    minTemperatTime = readingPt.TimeStamp;
+                }
+                if (Math.Abs(readingPt.Humidity - maxHum) <= 0.15d)
+                {
+                    posMaxHumidity = pixPerReading * actColumn;
+                    maxHumidityTime = readingPt.TimeStamp;
+                }
 
-                var actTime = readingPt.TimeStamp.Second + readingPt.TimeStamp.Minute * 100 +
-                              readingPt.TimeStamp.Hour * 10000;
+                var actTime = readingPt.TimeStamp.Second + readingPt.TimeStamp.Minute * 100 + readingPt.TimeStamp.Hour * 10000;
                 if (Math.Abs(actTime - middleIntTime) < minDiffToMiddleTime)
                 {
                     minDiffToMiddleTime = (Math.Abs(actTime - middleIntTime));
@@ -307,7 +348,7 @@ namespace Watering2.ViewModels
                 if (toSkip != 0)
                 {
                     skippedItems++;
-                    if (skippedItems <= toSkip)
+                    if (skippedItems < toSkip)
                         continue;
                     skippedItems = 0;
                 }
@@ -337,10 +378,15 @@ namespace Watering2.ViewModels
 
             MinTimeForPlot = tempList[0].TimeStamp.ToString("HH:mm");
             MaxTimeForPlot = tempList[^1].TimeStamp.ToString("HH:mm");
-            //MiddleTimeForPlot = tempList[tempList.Count / 2].TimeStamp.ToString("HH:mm");
 
             MaxTemperatPosForPlot = ((int)posMaxTemperat).ToString();
             MaxTemperatTimeForPlot = maxTemperatTime.ToString("HH:mm");
+
+            MinTemperatPosForPlot = ((int)posMinTemperat).ToString();
+            MinTemperatTimeForPlot = minTemperatTime.ToString("HH:mm");
+
+            MaxHumidityPosForPlot = ((int)posMaxHumidity).ToString();
+            MaxHumidityTimeForPlot = maxHumidityTime.ToString("HH:mm");
 
             MiddleTimeForPlot = strgMiddleTime;
             MiddleTimePosForPlot = ((int)posMiddleTime).ToString();

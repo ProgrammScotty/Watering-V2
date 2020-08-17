@@ -19,6 +19,7 @@ namespace Watering2.ViewModels
     {
         private ConfigController _cfgController;
         private int _pumpDurationMainCycle;
+        private int _maxPumpDurationMainCycle;
         private int _pumpDurationSecondCycle;
         private TimeSpan _startWateringMainCycle;
         private TimeSpan _startWateringSecondCycle;
@@ -53,6 +54,7 @@ namespace Watering2.ViewModels
         public ValidationHelper LevelColdTempRule { get; }
         public ValidationHelper CorrectionColdRule { get; }
         public ValidationHelper WateringDurationRule { get; }
+        public ValidationHelper MaxWateringDurationRule { get; }
         public ValidationHelper MaxDaysWithoutWateringRule { get; }
 
         public TabConfigViewModel()
@@ -137,6 +139,11 @@ namespace Watering2.ViewModels
                 duration => duration > 60,
                 "Ungültiger Wert: Gießzeit (>60)");
 
+            MaxWateringDurationRule = this.ValidationRule(
+                viewmodel => viewmodel.MaxPumpDurationMainCycle,
+                duration => duration > PumpDurationMainCycle,
+                $"Ungültiger Wert: Max. Gießzeit (>{PumpDurationMainCycle})");
+
             MaxDaysWithoutWateringRule = this.ValidationRule(
                 viewModel => viewModel.MaxDaysWithoutWatering,
                 days => days >= 0,
@@ -164,6 +171,7 @@ namespace Watering2.ViewModels
         {
             _pumpDurationMainCycle = _cfgController.Configuration.PumpDurationMainCycle;
             _pumpDurationSecondCycle = _cfgController.Configuration.PumpDurationSecondCycle;
+            _maxPumpDurationMainCycle = _cfgController.Configuration.MaxPumpDurationMainCycle;
             _startWateringMainCycle = _cfgController.Configuration.StartWateringMainCycle;
             _startWateringSecondCycle = _cfgController.Configuration.StartWateringSecondCycle;
             _levelHeatTemperature = _cfgController.Configuration.LevelHeatTemperature;
@@ -184,6 +192,7 @@ namespace Watering2.ViewModels
         {
             _cfgController.Configuration.PumpDurationMainCycle = _pumpDurationMainCycle;
             _cfgController.Configuration.PumpDurationSecondCycle = _pumpDurationSecondCycle;
+            _cfgController.Configuration.MaxPumpDurationMainCycle = _maxPumpDurationMainCycle;
             _cfgController.Configuration.StartWateringMainCycle = _startWateringMainCycle;
             _cfgController.Configuration.StartWateringSecondCycle = _startWateringSecondCycle;
             _cfgController.Configuration.LevelHeatTemperature = _levelHeatTemperature;
@@ -315,6 +324,12 @@ namespace Watering2.ViewModels
         {
             get => _pumpDurationMainCycle;
             set => this.RaiseAndSetIfChanged(ref _pumpDurationMainCycle, value);
+        }
+
+        public int MaxPumpDurationMainCycle
+        {
+            get => _maxPumpDurationMainCycle;
+            set => this.RaiseAndSetIfChanged(ref _maxPumpDurationMainCycle, value);
         }
     }
 }

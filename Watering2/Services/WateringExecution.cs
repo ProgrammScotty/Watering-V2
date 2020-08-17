@@ -194,13 +194,7 @@ namespace Watering2.Services
                     tempAboveHotLevelAfternoon += diff;
             }
 
-            //Durchschnitts Übertemperatur 40° soll Korrekturwert _corrFactorHot ergeben
-            //double corrAdditive = (_cfgCtrl.Configuration.CorrFactorHeat - 1d) / (40d - _cfgCtrl.Configuration.LevelHeatTemperature); 
-            //double corrHotNew = hotSamplesCntAfternoon > 0 ? 
-            //    1d + (tempAboveHotLevelAfternoon / hotSamplesCntAfternoon) * ((double)hotSamplesCntAfternoon / samplesAfternoon.Count) * corrAdditive 
-            //    : 1;
-
-            //statt 40 Grad nun eine Temperatur von 3° über dem Hitzelevel soll den CorrFactorHeat ergeben
+            //Eine Temperatur von 3° über dem Hitzelevel soll den CorrFactorHeat ergeben
             double maxSumForDeltaXDegrees = samplesAfternoon.Count * 3d;
             double corrHotNew = (tempAboveHotLevelAfternoon / maxSumForDeltaXDegrees) * _cfgCtrl.Configuration.CorrFactorHeat;
             if (hotSamplesCntAfternoon == 0)
@@ -210,6 +204,12 @@ namespace Watering2.Services
             {
                 _logger.Warning("CorrHot korrigiert: Errechnter Wert: {CorrHotNew}", corrHotNew);
                 corrHotNew = 1d;
+            }
+
+            if (corrHotNew*_cfgCtrl.Configuration.PumpDurationMainCycle > _cfgCtrl.Configuration.MaxPumpDurationMainCycle)
+            {
+                _logger.Warning("CorrHot korrigiert: Errechnter Wert {CorrHotNew}  führt zu einer Gießzeit {PumpDuration} die oberhalb der maximalen Dauer {MaxDurMain} liegt", corrHotNew, corrHotNew * _cfgCtrl.Configuration.PumpDurationMainCycle, _cfgCtrl.Configuration.MaxPumpDurationMainCycle);
+                corrHotNew = (double)_cfgCtrl.Configuration.MaxPumpDurationMainCycle / _cfgCtrl.Configuration.PumpDurationMainCycle;
             }
 
             int coldSamplesCntMonitoringHours = samples.Count(point => point.Temperature <= _cfgCtrl.Configuration.LevelColdTemperature);

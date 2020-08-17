@@ -12,7 +12,7 @@
         x:Name="HauptFenster"
         Icon="/Assets/avalonia-logo.ico"
         Title="Watering Project V 2.0"
-        Width="750" Height="420" HasSystemDecorations="False"
+        Width="800" Height="444" HasSystemDecorations="False"
         d:DataContext="{x:Static dd:DesignViewModel.CfgViewModel}"
         HorizontalAlignment="Left" VerticalAlignment="Top">
 
@@ -37,8 +37,8 @@
     <!--<TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
 
 
-  <StackPanel Width="750">
-    <TabControl Name="TabCtrl">
+  <StackPanel Width="800" HorizontalAlignment="Left">
+    <TabControl Name="TabCtrl" Width="800" HorizontalAlignment="Left">
       <TabItem Header="Status" Name="TabStatus">
          <uc:UcStatus Margin="10,10,0,0" />
       </TabItem>
